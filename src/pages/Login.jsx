@@ -1,13 +1,14 @@
-import TextField from "@mui/material/TextField";
 import { Button, Typography, Link } from "@mui/material";
+import TextField from "@mui/material/TextField";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { errorSnackBar, successSnackBar } from "../components/snackbars";
 import usersData from "././../data/users.json";
 
 export default function Login() {
   const [gmailUser, setGmailUser] = useState("");
   const [userPassword, setUserPassword] = useState("");
-  const [error, setError] = useState(false);
+
   const navigate = useNavigate();
 
   return (
@@ -32,29 +33,48 @@ export default function Login() {
                 onChange={(e) => setGmailUser(e.target.value)}
                 style={{
                   width: 280,
-                  marginBottom: 19,
                 }}
                 id="outlined-basic"
                 label="Email"
                 variant="outlined"
               />
+
               <TextField
+                type="password"
                 onChange={(e) => setUserPassword(e.target.value)}
                 style={{
                   width: 280,
                   marginBottom: 1,
+                  marginTop: 19,
                 }}
                 id="outlined-basic"
                 label="Password"
                 variant="outlined"
               />
 
-              <Link style={{ textAlign: "right", fontSize: "16px" }} href="#">
+              <Link
+                style={{ textAlign: "right", fontSize: "16px" }}
+                href="/register"
+              >
                 No account? Make one!
               </Link>
             </div>
             <Button
-              onClick={() => {}}
+              onClick={() => {
+                const res = usersData.users.find(
+                  (user) =>
+                    user.email === gmailUser && user.paswword === userPassword
+                );
+
+                if (res) {
+                  localStorage.setItem("user", JSON.stringify(res));
+                  successSnackBar("Successfully loged in!");
+                  navigate("/home");
+                } else {
+                  // used custom created snackbars
+                  errorSnackBar("Incorrect email or password!");
+                }
+              }}
               style={{
                 borderRadius: 0,
                 backgroundColor: "#3F3D56",
@@ -67,6 +87,8 @@ export default function Login() {
               Login
             </Button>
           </div>
+
+          {/* hides the image when the screen size is less or equal to 768 */}
           <div className="sm:hidden">
             <svg
               xmlns="http://www.w3.org/2000/svg"
