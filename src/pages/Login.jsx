@@ -14,7 +14,7 @@ export default function Login() {
   return (
     <div className="bg-gradient-to-br from-gray-700 via-gray-900 to-black w-full h-screen">
       <div className="flex justify-center text-center h-screen items-center">
-        <div className="flex flex-row bg-white rounded-md shadow-lg px-16 gap-9 py-12 mx-10">
+        <div className="flex flex-row bg-white rounded-md shadow-lg px-16 sm:px-10 gap-9 py-12 mx-10">
           <div className="flex flex-col gap-5">
             <div className="mb-2">
               <Typography
