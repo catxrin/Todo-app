@@ -3,27 +3,32 @@
     {
       "username": "John",
       "email": "john@gmail.com",
-      "paswword": "123456789"
+      "paswword": "123456789",
+      "tasks": []
     },
     {
       "username": "Anna",
       "email": "Anna@gmail.com",
-      "paswword": "123456789"
+      "paswword": "123456789",
+      "tasks": []
     },
     {
       "username": "Smit",
       "email": "Smit@gmail.com",
-      "paswword": "123456789"
+      "paswword": "123456789",
+      "tasks": []
     },
     {
       "username": "Terra",
       "email": "terra@gmail.com",
-      "paswword": "123456789"
+      "paswword": "123456789",
+      "tasks": []
     },
     {
       "username": "David",
       "email": "david@gmail.com",
-      "paswword": "123456789"
+      "paswword": "123456789",
+      "tasks": []
     }
   ]
 }
