@@ -11,6 +11,15 @@ export default function Register() {
     userPassword: "",
     username: "",
   });
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setData((prevUserData) => ({
+      ...prevUserData,
+      [name]: value,
+    }));
+  };
+
   const navigate = useNavigate();
 
   return (
@@ -31,7 +40,9 @@ export default function Register() {
           </div>
           <div className="flex flex-col">
             <TextField
-              onChange={(e) => setData({ ...data, username: e.target.value })}
+              onChange={(e) => handleInputChange(e)}
+              name="username"
+              value={data.username}
               style={{
                 width: 280,
                 marginBottom: 16,
@@ -41,7 +52,9 @@ export default function Register() {
               variant="outlined"
             />
             <TextField
-              onChange={(e) => setData({ ...data, gmailUser: e.target.value })}
+              onChange={(e) => handleInputChange(e)}
+              name="gmailUser"
+              value={data.gmailUser}
               style={{
                 width: 280,
               }}
@@ -52,9 +65,9 @@ export default function Register() {
 
             <TextField
               type="password"
-              onChange={(e) =>
-                setData({ ...data, userPassword: e.target.value })
-              }
+              name="userPassword"
+              value={data.userPassword}
+              onChange={(e) => handleInputChange(e)}
               style={{
                 width: 280,
                 marginBottom: 1,
