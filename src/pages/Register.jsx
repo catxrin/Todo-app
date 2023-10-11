@@ -3,11 +3,13 @@ import TextField from "@mui/material/TextField";
 import { useState } from "react";
 import { addUser } from "../helpers/dataActions";
 import loginIcon from ".././assets/loginIcon.svg";
+import { useNavigate } from "react-router-dom";
 
 export default function Register() {
   const [gmailUser, setGmailUser] = useState("");
   const [userPassword, setUserPassword] = useState("");
   const [username, setUsername] = useState("");
+  const navigate = useNavigate();
 
   return (
     <div className="bg-gradient-to-br from-gray-700 via-gray-900 to-black flex justify-center items-center w-full h-screen sm:bg-gradient-to-br sm:from-white sm:to-white">
@@ -18,7 +20,7 @@ export default function Register() {
               style={{ fontFamily: "Gabarito", padding: 0, margin: 0 }}
               variant="h3"
             >
-              Login
+              Register
             </Typography>
 
             <Typography sx={{ fontFamily: "Gabarito" }} variant="p">
@@ -65,7 +67,7 @@ export default function Register() {
           </div>
           <Button
             onClick={() => {
-              addUser(username, gmailUser, userPassword);
+              addUser(username, gmailUser, userPassword) && navigate("/");
             }}
             style={{
               borderRadius: 0,
@@ -76,7 +78,7 @@ export default function Register() {
             }}
             variant="contained"
           >
-            Login
+            Register
           </Button>
         </div>
 

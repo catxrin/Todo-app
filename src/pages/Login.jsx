@@ -76,7 +76,7 @@ export default function Login() {
 
         {/* hides the image when the screen size is less or equal to 768 */}
         <div className="sm:hidden">
-          <img src={loginIcon} alt="" />{" "}
+          <img src={loginIcon} alt="" />
         </div>
       </div>
     </div>
