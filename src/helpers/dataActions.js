@@ -34,8 +34,6 @@ export const addUser = (username, gmailUser, userPassword) => {
   }
 };
 
-// export const addTodo = (gmailUser, task) => {};
-
 export const loginUser = (gmailUser, userPassword) => {
   const checkForUser = usersData?.find(
     (user) => user.email === gmailUser && user.password === userPassword

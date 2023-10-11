@@ -6,9 +6,11 @@ import loginIcon from ".././assets/loginIcon.svg";
 import { useNavigate } from "react-router-dom";
 
 export default function Register() {
-  const [gmailUser, setGmailUser] = useState("");
-  const [userPassword, setUserPassword] = useState("");
-  const [username, setUsername] = useState("");
+  const [data, setData] = useState({
+    gmailUser: "",
+    userPassword: "",
+    username: "",
+  });
   const navigate = useNavigate();
 
   return (
@@ -29,7 +31,7 @@ export default function Register() {
           </div>
           <div className="flex flex-col">
             <TextField
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={(e) => setData({ ...data, username: e.target.value })}
               style={{
                 width: 280,
                 marginBottom: 16,
@@ -39,7 +41,7 @@ export default function Register() {
               variant="outlined"
             />
             <TextField
-              onChange={(e) => setGmailUser(e.target.value)}
+              onChange={(e) => setData({ ...data, gmailUser: e.target.value })}
               style={{
                 width: 280,
               }}
@@ -50,7 +52,9 @@ export default function Register() {
 
             <TextField
               type="password"
-              onChange={(e) => setUserPassword(e.target.value)}
+              onChange={(e) =>
+                setData({ ...data, userPassword: e.target.value })
+              }
               style={{
                 width: 280,
                 marginBottom: 1,
@@ -67,7 +71,8 @@ export default function Register() {
           </div>
           <Button
             onClick={() => {
-              addUser(username, gmailUser, userPassword) && navigate("/");
+              addUser(data.username, data.gmailUser, data.userPassword) &&
+                navigate("/");
             }}
             style={{
               borderRadius: 0,
@@ -82,7 +87,6 @@ export default function Register() {
           </Button>
         </div>
 
-        {/* hides the image when the screen size is less or equal to 768 */}
         <div className="sm:hidden">
           <img src={loginIcon} alt="" />
         </div>
