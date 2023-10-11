@@ -1,14 +1,13 @@
 import { Button, Typography, Link } from "@mui/material";
 import TextField from "@mui/material/TextField";
-import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { addUser } from "../helpers/dataActions";
 import loginIcon from ".././assets/loginIcon.svg";
-import { loginUser } from "../helpers/dataActions";
 
-export default function Login() {
+export default function Register() {
   const [gmailUser, setGmailUser] = useState("");
   const [userPassword, setUserPassword] = useState("");
-  const navigate = useNavigate();
+  const [username, setUsername] = useState("");
 
   return (
     <div className="bg-gradient-to-br from-gray-700 via-gray-900 to-black flex justify-center items-center w-full h-screen sm:bg-gradient-to-br sm:from-white sm:to-white">
@@ -28,6 +27,16 @@ export default function Login() {
           </div>
           <div className="flex flex-col">
             <TextField
+              onChange={(e) => setUsername(e.target.value)}
+              style={{
+                width: 280,
+                marginBottom: 16,
+              }}
+              id="outlined-basic"
+              label="Username"
+              variant="outlined"
+            />
+            <TextField
               onChange={(e) => setGmailUser(e.target.value)}
               style={{
                 width: 280,
@@ -43,23 +52,20 @@ export default function Login() {
               style={{
                 width: 280,
                 marginBottom: 1,
-                marginTop: 19,
+                marginTop: 16,
               }}
               id="outlined-basic"
               label="Password"
               variant="outlined"
             />
 
-            <Link
-              style={{ textAlign: "right", fontSize: "16px" }}
-              href="/register"
-            >
-              No account? Make one!
+            <Link style={{ textAlign: "right", fontSize: "16px" }} href="/">
+              Already have an account? Login!
             </Link>
           </div>
           <Button
             onClick={() => {
-              loginUser(gmailUser, userPassword) && navigate("/home");
+              addUser(username, gmailUser, userPassword);
             }}
             style={{
               borderRadius: 0,
@@ -76,7 +82,7 @@ export default function Login() {
 
         {/* hides the image when the screen size is less or equal to 768 */}
         <div className="sm:hidden">
-          <img src={loginIcon} alt="" />{" "}
+          <img src={loginIcon} alt="" />
         </div>
       </div>
     </div>
