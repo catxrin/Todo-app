@@ -19,15 +19,16 @@ export const addUser = (username, gmailUser, userPassword) => {
     if (gmailUser === "" || username === "" || userPassword === "") {
       errorSnackBar("Do not leave empty fields");
     } else {
-      localStorage.setItem(
-        gmailUser,
-        JSON.stringify({
-          username: username,
-          email: gmailUser,
-          password: userPassword,
-          tasks: [],
-        })
-      );
+      const newUser = {
+        username: username,
+        email: gmailUser,
+        password: userPassword,
+        tasks: [],
+      };
+      usersData.push(newUser);
+
+      localStorage.setItem(gmailUser, JSON.stringify(newUser));
+
       successSnackBar(SUCCESS_REGISTER);
       return true;
     }
