@@ -6,7 +6,7 @@ import Collon from "../components/Collon";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { nanoid } from "nanoid";
-import { sortTasks, addTodo } from "../helpers/dataActions";
+import { sortTasks, addTodo, deleteAccount } from "../helpers/dataActions";
 
 export default function Home() {
   const [currentTask, setCurrentTask] = useState("");
@@ -31,7 +31,10 @@ export default function Home() {
           </Typography>
           <div className="flex flex-row gap-3 justify-center">
             <Button
-              onClick={() => {}}
+              onClick={() => {
+                deleteAccount(userEmail);
+                navigate("/");
+              }}
               style={{
                 borderRadius: 2,
                 backgroundColor: "#3F3D56",
@@ -124,14 +127,15 @@ export default function Home() {
             label="In Progress 🔥"
             data={
               <>
-                {userData.tasks?.map(({ task, status }, i) => {
-                  if (status === "In Progress") {
+                {userData.tasks?.map((el, i) => {
+                  if (el.status === "In Progress") {
                     return (
                       <Card
+                        el={el}
                         key={i}
                         color="bg-[#D3E5EF]"
-                        label={task}
-                        tag={status}
+                        label={el.task}
+                        tag={el.status}
                       />
                     );
                   }
@@ -144,14 +148,15 @@ export default function Home() {
             color="bg-[#F7FAF7]"
             data={
               <>
-                {userData.tasks?.map(({ task, status }, i) => {
-                  if (status === "Done") {
+                {userData.tasks?.map((el, i) => {
+                  if (el.status === "Done") {
                     return (
                       <Card
+                        el={el}
                         key={i}
                         color="bg-[#D3E5EF]"
-                        label={task}
-                        tag={status}
+                        label={el.task}
+                        tag={el.status}
                       />
                     );
                   }

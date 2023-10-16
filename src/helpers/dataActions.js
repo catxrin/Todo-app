@@ -57,6 +57,21 @@ export const deleteTodo = (gmailUser, task) => {
     ?.tasks.filter((el) => el.id !== task.id);
 
   usersData.find((user) => user.email === gmailUser).tasks = user;
+  console.log(user);
+  localStorage.setItem(
+    gmailUser,
+    JSON.stringify(usersData?.find((user) => user.email === gmailUser))
+  );
+};
+
+export const deleteAccount = (gmailUser) => {
+  usersData.filter((user) => user.email !== gmailUser);
+};
+
+export const moveTask = (gmailUser, task, changeTo) => {
+  usersData
+    .find((user) => user.email === gmailUser)
+    .tasks.find((el) => el.id === task.el.id).status = changeTo;
 
   localStorage.setItem(
     gmailUser,

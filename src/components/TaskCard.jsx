@@ -5,8 +5,8 @@ export default function Card({ label, tag, el }) {
   const userEmail = sessionStorage.getItem("loggedIn");
 
   return (
-    <div className="bg-white border-l-[6px] flex flex-row justify-between shadow-sm shadow-[#cccccccc] p-1.5 rounded-md border-black w-[220px]">
-      <div className="flex flex-col">
+    <div className="bg-white relative border-l-[6px] flex flex-row justify-between shadow-sm shadow-[#cccccccc] p-1.5 rounded-md border-black w-[220px]">
+      <div className="flex flex-col relative">
         <Typography
           style={{
             fontFamily: "Gabarito",
@@ -19,14 +19,14 @@ export default function Card({ label, tag, el }) {
           {label}
         </Typography>
 
-        <Tags tag={tag} />
+        <Tags tag={tag} el={el} />
       </div>
       <span
         onClick={() => {
           deleteTodo(userEmail, el);
           location.reload();
         }}
-        className="material-symbols-outlined"
+        className="material-symbols-outlined absolute right-0 mr-2"
       >
         delete
       </span>
