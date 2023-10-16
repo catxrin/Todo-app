@@ -10,6 +10,7 @@ export default function Register() {
     gmailUser: "",
     userPassword: "",
     username: "",
+    todos: [],
   });
 
   const handleInputChange = (event) => {

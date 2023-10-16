@@ -35,6 +35,35 @@ export const addUser = (username, gmailUser, userPassword) => {
   }
 };
 
+export const addTodo = (gmailUser, task) => {
+  usersData?.find((user) => user.email === gmailUser)?.tasks.push(task);
+  localStorage.setItem(
+    gmailUser,
+    JSON.stringify(usersData?.find((user) => user.email === gmailUser))
+  );
+};
+
+export const sortTasks = (gmailUser) => {
+  usersData?.find((user) => user.email === gmailUser)?.tasks.reverse();
+  localStorage.setItem(
+    gmailUser,
+    JSON.stringify(usersData?.find((user) => user.email === gmailUser))
+  );
+};
+
+export const deleteTodo = (gmailUser, task) => {
+  const user = usersData
+    ?.find((user) => user.email === gmailUser)
+    ?.tasks.filter((el) => el.id !== task.id);
+
+  usersData.find((user) => user.email === gmailUser).tasks = user;
+
+  localStorage.setItem(
+    gmailUser,
+    JSON.stringify(usersData?.find((user) => user.email === gmailUser))
+  );
+};
+
 export const loginUser = (gmailUser, userPassword) => {
   const checkForUser = usersData?.find(
     (user) => user.email === gmailUser && user.password === userPassword
@@ -43,6 +72,7 @@ export const loginUser = (gmailUser, userPassword) => {
   if (checkForUser) {
     localStorage.setItem(gmailUser, JSON.stringify(checkForUser));
     successSnackBar(SUCCESS_LOGIN);
+    sessionStorage.setItem("loggedIn", gmailUser);
     return true;
   } else if (gmailUser === "" || userPassword === "") {
     errorSnackBar(NO_EMPTY_FIELDS);

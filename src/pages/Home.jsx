@@ -4,12 +4,21 @@ import TextField from "@mui/material/TextField";
 import Card from "../components/TaskCard";
 import Collon from "../components/Collon";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { nanoid } from "nanoid";
+import { sortTasks, addTodo } from "../helpers/dataActions";
 
 export default function Home() {
+  const [currentTask, setCurrentTask] = useState("");
+  const [rotate, setRotate] = useState(false);
+  const userEmail = sessionStorage.getItem("loggedIn");
+  const userData = JSON.parse(localStorage.getItem(userEmail));
   const navigate = useNavigate();
+  const id = nanoid();
+
   return (
     <div className="flex flex-row">
-      <div className="h-screen flex flex-col justify-center text-center bg-slate-50 shadow-md w-[300px]">
+      <div className="h-screen flex flex-col justify-center text-center bg-slate-100 shadow-md shadow-slate-300 w-[300px]">
         <div className="flex flex-col justify-center place-items-center mb-16">
           <div className="w-[170px]">
             <img className="object-contain" src={profilePicture} />
@@ -34,6 +43,7 @@ export default function Home() {
             >
               Delete Account
             </Button>
+
             <Button
               onClick={() => navigate("/")}
               style={{
@@ -50,26 +60,62 @@ export default function Home() {
           </div>
         </div>
       </div>
-      <div className="flex flex-col h-screen justify-center place-items-center m-auto">
-        <TextField
-          style={{
-            width: 500,
-            marginBottom: 30,
-          }}
-          id="outlined-basic"
-          label="Write your tasks here..."
-          variant="outlined"
-        />
-        <div className="flex flex-row justify-between gap-6 items-end">
+      <div className="flex flex-col gap-1 h-screen justify-center place-items-center m-auto">
+        <div className="flex flex-row gap-1">
+          <TextField
+            value={currentTask}
+            onChange={(e) => setCurrentTask(e.target.value)}
+            onKeyPress={(e) => {
+              if (e.key === "Enter") {
+                addTodo(userEmail, {
+                  task: currentTask.trim(),
+                  status: "Todo",
+                  id: id,
+                });
+                setCurrentTask("");
+              }
+            }}
+            style={{
+              width: 500,
+              marginBottom: 30,
+            }}
+            id="outlined-basic"
+            label="Write your tasks here..."
+            variant="outlined"
+          />
+          <div>
+            <span
+              onClick={() => {
+                sortTasks(userEmail);
+                setRotate(!rotate);
+              }}
+              className={`material-symbols-outlined text-[50px] text-[#3F3D56] ${
+                rotate && "rotate-180"
+              }`}
+            >
+              sort
+            </span>
+          </div>
+        </div>
+        <div className="flex flex-row justify-between gap-8 items-end">
           <Collon
             label="Todo"
             color="bg-[#F5FAFC]"
             data={
               <>
-                <Card color="bg-[#D3E5EF]" label="GYM" />
-                <Card color="bg-[#D3E5EF]" label="GYM" />
-                <Card color="bg-[#D3E5EF]" label="GYM" />
-                <Card color="bg-[#D3E5EF]" label="GYM" />
+                {userData.tasks?.map((el, i) => {
+                  if (el.status === "Todo") {
+                    return (
+                      <Card
+                        el={el}
+                        key={i}
+                        color="bg-[#D3E5EF]"
+                        label={el.task}
+                        tag={el.status}
+                      />
+                    );
+                  }
+                })}
               </>
             }
           />
@@ -77,16 +123,41 @@ export default function Home() {
             color="bg-[#FBF9FD]"
             label="In Progress 🔥"
             data={
-              <Card
-                color="bg-[#E8DEEE]"
-                label="GYM,kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk"
-              />
+              <>
+                {userData.tasks?.map(({ task, status }, i) => {
+                  if (status === "In Progress") {
+                    return (
+                      <Card
+                        key={i}
+                        color="bg-[#D3E5EF]"
+                        label={task}
+                        tag={status}
+                      />
+                    );
+                  }
+                })}
+              </>
             }
           />
           <Collon
             label="Done 🚀"
             color="bg-[#F7FAF7]"
-            data={<Card color="bg-[#DBEDDB]" label="Go take a shower" />}
+            data={
+              <>
+                {userData.tasks?.map(({ task, status }, i) => {
+                  if (status === "Done") {
+                    return (
+                      <Card
+                        key={i}
+                        color="bg-[#D3E5EF]"
+                        label={task}
+                        tag={status}
+                      />
+                    );
+                  }
+                })}
+              </>
+            }
           />
         </div>
       </div>

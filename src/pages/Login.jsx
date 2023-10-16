@@ -74,7 +74,6 @@ export default function Login() {
           </Button>
         </div>
 
-        {/* hides the image when the screen size is less or equal to 768 */}
         <div className="sm:hidden">
           <img src={loginIcon} alt="" />
         </div>
