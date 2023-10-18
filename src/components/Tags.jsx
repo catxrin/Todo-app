@@ -1,16 +1,20 @@
 import { Typography } from "@mui/material";
 import TagsDropdown from "./TagsDropdown";
 import { useState } from "react";
-export default function Tags({ tag, el }) {
+
+const tagColors = {
+  Todo: "bg-[#D3E5EF]",
+  "In Progress": "bg-[#E8DEEE]",
+  Done: "bg-[#DBEDDB]",
+};
+export default function Tags({ task, setUserData }) {
   const [showOptions, setShowOptions] = useState(false);
   return (
     <>
       <div
         onClick={() => setShowOptions(!showOptions)}
-        className={`${tag === "In Progress" && "bg-[#E8DEEE]"} ${
-          tag === "Done" && "bg-[#DBEDDB]"
-        } ${
-          tag === "Todo" && "bg-[#D3E5EF]"
+        className={`${
+          tagColors[task.status]
         } px-1 rounded-lg text-center flex self-start mt-1 relative`}
       >
         <Typography
@@ -20,10 +24,10 @@ export default function Tags({ tag, el }) {
           }}
           variant="p"
         >
-          {tag}
+          {task.status}
         </Typography>
       </div>
-      {showOptions && <TagsDropdown el={el} />}
+      {showOptions && <TagsDropdown task={task} setUserData={setUserData} />}
     </>
   );
 }

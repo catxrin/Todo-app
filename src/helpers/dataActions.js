@@ -7,8 +7,13 @@ import {
   SUCCESS_REGISTER,
 } from "../constants/messages";
 
-const usersData =
+let usersData =
   Object.values(localStorage).map((data) => JSON.parse(data)) || [];
+
+export const deleteUser = (gmailUser) => {
+  localStorage.removeItem(gmailUser);
+  usersData = Object.values(localStorage).map((data) => JSON.parse(data)) || [];
+};
 
 export const addUser = (username, gmailUser, userPassword) => {
   const checkForUser = usersData?.find((user) => user.email === gmailUser);
@@ -17,7 +22,7 @@ export const addUser = (username, gmailUser, userPassword) => {
     errorSnackBar(USER_EXIST);
   } else {
     if (gmailUser === "" || username === "" || userPassword === "") {
-      errorSnackBar("Do not leave empty fields");
+      errorSnackBar(NO_EMPTY_FIELDS);
     } else {
       const newUser = {
         username: username,
@@ -33,50 +38,6 @@ export const addUser = (username, gmailUser, userPassword) => {
       return true;
     }
   }
-};
-
-export const addTodo = (gmailUser, task) => {
-  usersData?.find((user) => user.email === gmailUser)?.tasks.push(task);
-  localStorage.setItem(
-    gmailUser,
-    JSON.stringify(usersData?.find((user) => user.email === gmailUser))
-  );
-};
-
-export const sortTasks = (gmailUser) => {
-  usersData?.find((user) => user.email === gmailUser)?.tasks.reverse();
-  localStorage.setItem(
-    gmailUser,
-    JSON.stringify(usersData?.find((user) => user.email === gmailUser))
-  );
-};
-
-export const deleteTodo = (gmailUser, task) => {
-  const user = usersData
-    ?.find((user) => user.email === gmailUser)
-    ?.tasks.filter((el) => el.id !== task.id);
-
-  usersData.find((user) => user.email === gmailUser).tasks = user;
-  console.log(user);
-  localStorage.setItem(
-    gmailUser,
-    JSON.stringify(usersData?.find((user) => user.email === gmailUser))
-  );
-};
-
-export const deleteAccount = (gmailUser) => {
-  usersData.filter((user) => user.email !== gmailUser);
-};
-
-export const moveTask = (gmailUser, task, changeTo) => {
-  usersData
-    .find((user) => user.email === gmailUser)
-    .tasks.find((el) => el.id === task.el.id).status = changeTo;
-
-  localStorage.setItem(
-    gmailUser,
-    JSON.stringify(usersData?.find((user) => user.email === gmailUser))
-  );
 };
 
 export const loginUser = (gmailUser, userPassword) => {

@@ -1,8 +1,5 @@
 import { Typography } from "@mui/material";
-import { moveTask } from "../helpers/dataActions";
-export default function TagsDropdown(el) {
-  const userEmail = sessionStorage.getItem("loggedIn");
-
+export default function TagsDropdown({ task, setUserData }) {
   const style = (color) => {
     return {
       padding: 5,
@@ -13,9 +10,14 @@ export default function TagsDropdown(el) {
     };
   };
   return (
-    <div className="flex flex-row p-1 rounded-md mt-2 gap-2.5">
+    <div className="flex flex-row p-1 mt-2 gap-2.5 border-t-2 border-gray-200 pt-2">
       <Typography
-        onClick={() => moveTask(userEmail, el, "Todo")}
+        onClick={() => {
+          setUserData((prev) => {
+            prev.tasks.find((el) => el.id === task.id).status = "Todo";
+            return { ...prev };
+          });
+        }}
         className="shadow-sm"
         style={style("#D3E5EF")}
         variant="p"
@@ -23,7 +25,12 @@ export default function TagsDropdown(el) {
         Todo
       </Typography>
       <Typography
-        onClick={() => moveTask(userEmail, el, "In Progress")}
+        onClick={() => {
+          setUserData((prev) => {
+            prev.tasks.find((el) => el.id === task.id).status = "In Progress";
+            return { ...prev };
+          });
+        }}
         className="shadow-sm"
         style={style("#E8DEEE")}
         variant="p"
@@ -31,7 +38,13 @@ export default function TagsDropdown(el) {
         Progress
       </Typography>
       <Typography
-        onClick={() => moveTask(userEmail, el, "Done")}
+        onClick={() => {
+          setUserData((prev) => {
+            prev.tasks.find((el) => el.id === task.id).status = "Done";
+            console.log(prev);
+            return { ...prev };
+          });
+        }}
         className="shadow-sm"
         style={style("#DBEDDB")}
         variant="p"

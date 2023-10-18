@@ -21,6 +21,28 @@
       @tailwind base;
       @tailwind components;
       @tailwind utilities;
+      * {
+        scrollbar-width: thin;
+        scrollbar-color: black;
+      }
+      /* Chrome, Edge, and Safari */
+      *::-webkit-scrollbar {
+        width: 9px;
+      }
+      *::-webkit-scrollbar-track {
+        background: rgb(246, 246, 246);
+        border-radius: 8px;
+        max-height: 10px;
+      }
+
+      *::-webkit-scrollbar-thumb {
+        background-color: #3f3d56ad;
+        border-radius: 14px;
+        max-height: 10px;
+      }
+      *::-webkit-scrollbar-thumb {
+        min-height: 10px;
+      }
     </style>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
