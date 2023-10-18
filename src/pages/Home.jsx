@@ -46,7 +46,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-row sm:flex-col">
-      <div className="h-screen sm:h-[300px] mb-10 flex flex-col justify-center text-center bg-slate-100 shadow-md shadow-slate-300 w-[300px] sm:w-screen px-5">
+      <div className="h-screen sm:mb-10 sm:h-[300px] flex flex-col justify-center text-center bg-slate-100 shadow-md shadow-slate-300 w-[300px] sm:w-screen px-5">
         <div className="flex flex-col justify-center place-items-center mb-16 sm:mb-0">
           <div className="w-[170px] sm:hidden">
             <img
