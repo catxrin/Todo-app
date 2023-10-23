@@ -1,5 +1,6 @@
 import { Typography } from "@mui/material";
 import Tags from "./Tags";
+import { deleteTask } from "../helpers/userActions";
 
 export default function TaskCard({ task, setUserData }) {
   return (
@@ -14,17 +15,14 @@ export default function TaskCard({ task, setUserData }) {
           }}
           variant="p"
         >
-          {task.task}
+          {task.text}
         </Typography>
 
         <Tags task={task} setUserData={setUserData} />
       </div>
       <span
         onClick={() => {
-          setUserData((prev) => ({
-            ...prev,
-            tasks: prev.tasks?.filter(({ id }) => id !== task.id),
-          }));
+          deleteTask(task._id, setUserData);
         }}
         className="material-symbols-outlined absolute right-0 mr-2"
       >

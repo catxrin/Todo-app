@@ -1,6 +1,13 @@
 import { Typography } from "@mui/material";
+import { updateTask } from "../helpers/userActions";
 export default function TagsDropdown({ task, setUserData }) {
-  const style = (color) => {
+  const statuses = {
+    statusTodo: "Todo",
+    statusInProgress: "In Progress",
+    statusDone: "Done",
+  };
+
+  const tagStyle = (color) => {
     return {
       padding: 5,
       backgroundColor: color,
@@ -13,40 +20,30 @@ export default function TagsDropdown({ task, setUserData }) {
     <div className="flex flex-row p-1 mt-2 gap-2.5 border-t-2 border-gray-200 pt-2">
       <Typography
         onClick={() => {
-          setUserData((prev) => {
-            prev.tasks.find((el) => el.id === task.id).status = "Todo";
-            return { ...prev };
-          });
+          updateTask(task._id, statuses.statusTodo, setUserData);
         }}
         className="shadow-sm"
-        style={style("#D3E5EF")}
+        style={tagStyle("#D3E5EF")}
         variant="p"
       >
         Todo
       </Typography>
       <Typography
         onClick={() => {
-          setUserData((prev) => {
-            prev.tasks.find((el) => el.id === task.id).status = "In Progress";
-            return { ...prev };
-          });
+          updateTask(task._id, statuses.statusInProgress, setUserData);
         }}
         className="shadow-sm"
-        style={style("#E8DEEE")}
+        style={tagStyle("#E8DEEE")}
         variant="p"
       >
         Progress
       </Typography>
       <Typography
         onClick={() => {
-          setUserData((prev) => {
-            prev.tasks.find((el) => el.id === task.id).status = "Done";
-            console.log(prev);
-            return { ...prev };
-          });
+          updateTask(task._id, statuses.statusDone, setUserData);
         }}
         className="shadow-sm"
-        style={style("#DBEDDB")}
+        style={tagStyle("#DBEDDB")}
         variant="p"
       >
         Done

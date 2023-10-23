@@ -1,9 +1,9 @@
 import { Button, Typography, Link } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import { useState } from "react";
-import { addUser } from "../helpers/dataActions";
 import loginIcon from ".././assets/loginIcon.svg";
 import { useNavigate } from "react-router-dom";
+import { registerUser } from "../helpers/userActions";
 
 export default function Register() {
   const [data, setData] = useState({
@@ -87,8 +87,11 @@ export default function Register() {
           </div>
           <Button
             onClick={() => {
-              addUser(data.username, data.gmailUser, data.userPassword) &&
-                navigate("/");
+              registerUser({
+                username: data.username,
+                email: data.gmailUser,
+                password: data.userPassword,
+              }) && navigate("/");
             }}
             style={{
               borderRadius: 0,

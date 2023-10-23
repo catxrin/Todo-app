@@ -2,28 +2,21 @@ import { Typography, Button } from "@mui/material";
 import profilePicture from "../assets/undraw_relaunch_day_902d.svg";
 import TextField from "@mui/material/TextField";
 import TaskCard from "../components/TaskCard";
+import { getTasks } from "../helpers/userActions";
 import Collon from "../components/Collon";
 import { useNavigate } from "react-router-dom";
-import { deleteUser } from "../helpers/dataActions";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { nanoid } from "nanoid";
+import { errorSnackBar } from "../components/snackbars";
+import { QUOTE_URL } from "../server/server";
+import { getData, postNote } from "../helpers/userActions";
 
 export default function Home() {
   const [currentTask, setCurrentTask] = useState("");
   const [rotate, setRotate] = useState(false);
   const [quote, setQuote] = useState("");
-  const userEmail = sessionStorage.getItem("loggedIn");
   const navigate = useNavigate();
-  const id = nanoid();
-
-  const [userData, setUserData] = useState(
-    JSON.parse(localStorage.getItem(userEmail))
-  );
-
-  useEffect(() => {
-    localStorage.setItem(userEmail, JSON.stringify(userData));
-  }, [JSON.stringify(userData), userEmail]);
+  const [userData, setUserData] = useState();
 
   const styleBtn = {
     borderRadius: 2,
@@ -34,14 +27,19 @@ export default function Home() {
   };
 
   const getQuote = () => {
+    setQuote("🔭 Loading... ");
     axios
-      .get("https://dummyjson.com/quotes/random")
+      .get(QUOTE_URL)
       .then((res) => setQuote(res.data.quote))
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        errorSnackBar(err.message);
+        setQuote("🔭 Seems like there is a problem");
+      });
   };
 
   useEffect(() => {
     getQuote();
+    getData(setUserData);
   }, []);
 
   return (
@@ -59,7 +57,7 @@ export default function Home() {
             variant="h5"
             type="text"
           >
-            Welcome, {userData.username}
+            Welcome, {sessionStorage.getItem("username")}
           </Typography>
           <div className="shadow-sm shadow-[#cccccccc] bg-white border-x-4 border-black rounded p-2 mb-5 mt-3">
             <Typography variant="p">“{quote}„</Typography>
@@ -67,7 +65,7 @@ export default function Home() {
           <div className="flex flex-row gap-3 justify-center">
             <Button
               onClick={() => {
-                deleteUser(userEmail);
+                setUserData({});
                 navigate("/");
               }}
               style={styleBtn}
@@ -77,7 +75,11 @@ export default function Home() {
             </Button>
 
             <Button
-              onClick={() => navigate("/")}
+              onClick={() => {
+                setUserData({});
+                localStorage.removeItem("jwt");
+                navigate("/");
+              }}
               style={styleBtn}
               variant="contained"
             >
@@ -93,14 +95,8 @@ export default function Home() {
             onChange={(e) => setCurrentTask(e.target.value)}
             onKeyPress={(e) => {
               if (e.key === "Enter") {
-                setUserData((prev) => {
-                  prev?.tasks.push({
-                    task: currentTask.trim(),
-                    status: "Todo",
-                    id: id,
-                  });
-                  return prev;
-                });
+                postNote(currentTask, setUserData);
+                getTasks();
                 setCurrentTask("");
               }
             }}
@@ -134,11 +130,11 @@ export default function Home() {
           <Collon
             label="Todo"
             color="bg-[#F5FAFC]"
-            data={userData.tasks
+            data={userData
               ?.filter((t) => t.status === "Todo")
               .map((task) => (
                 <TaskCard
-                  key={task.id}
+                  key={task._id}
                   task={task}
                   setUserData={setUserData}
                   color="bg-[#D3E5EF]"
@@ -148,11 +144,11 @@ export default function Home() {
           <Collon
             color="bg-[#FBF9FD]"
             label="In Progress 🔥"
-            data={userData.tasks
+            data={userData
               ?.filter((t) => t.status === "In Progress")
               .map((task) => (
                 <TaskCard
-                  key={task.id}
+                  key={task._id}
                   task={task}
                   setUserData={setUserData}
                   color="bg-[#D3E5EF]"
@@ -162,11 +158,11 @@ export default function Home() {
           <Collon
             label="Done 🚀"
             color="bg-[#F7FAF7]"
-            data={userData.tasks
+            data={userData
               ?.filter((t) => t.status === "Done")
               .map((task) => (
                 <TaskCard
-                  key={task.id}
+                  key={task._id}
                   task={task}
                   setUserData={setUserData}
                   color="bg-[#D3E5EF]"

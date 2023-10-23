@@ -1,14 +1,12 @@
 import { Button, Typography, Link } from "@mui/material";
 import TextField from "@mui/material/TextField";
-import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import loginIcon from ".././assets/loginIcon.svg";
-import { loginUser } from "../helpers/dataActions";
+import { logIn } from "../helpers/userActions";
 
 export default function Login() {
   const [gmailUser, setGmailUser] = useState("");
   const [userPassword, setUserPassword] = useState("");
-  const navigate = useNavigate();
 
   return (
     <div className="bg-gradient-to-br from-gray-700 via-gray-900 to-black flex justify-center items-center w-full h-screen sm:bg-gradient-to-br sm:from-white sm:to-white">
@@ -22,12 +20,13 @@ export default function Login() {
               Login
             </Typography>
 
-            <Typography sx={{ fontFamily: "Gabarito" }} variant="p">
+            <Typography style={{ fontFamily: "Gabarito" }} variant="p">
               Reach your goals, stay organised.
             </Typography>
           </div>
           <div className="flex flex-col">
             <TextField
+              value={gmailUser}
               onChange={(e) => setGmailUser(e.target.value)}
               style={{
                 width: 280,
@@ -38,6 +37,7 @@ export default function Login() {
             />
 
             <TextField
+              value={userPassword}
               type="password"
               onChange={(e) => setUserPassword(e.target.value)}
               style={{
@@ -59,7 +59,7 @@ export default function Login() {
           </div>
           <Button
             onClick={() => {
-              loginUser(gmailUser, userPassword) && navigate("/home");
+              logIn({ email: gmailUser, password: userPassword });
             }}
             style={{
               borderRadius: 0,
@@ -73,7 +73,6 @@ export default function Login() {
             Login
           </Button>
         </div>
-
         <div className="sm:hidden">
           <img src={loginIcon} alt="" />
         </div>
