@@ -7,7 +7,7 @@ import {
   SUCCESS_REGISTER,
 } from "../constants/messages";
 
-const usersData =
+let usersData =
   Object.values(localStorage).map((data) => JSON.parse(data)) || [];
 
 export const deleteUser = (gmailUser) => {
