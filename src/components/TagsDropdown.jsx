@@ -41,7 +41,6 @@ export default function TagsDropdown({ task, setUserData }) {
         onClick={() => {
           setUserData((prev) => {
             prev.tasks.find((el) => el.id === task.id).status = "Done";
-            console.log(prev);
             return { ...prev };
           });
         }}
