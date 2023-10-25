@@ -1,5 +1,6 @@
 import { Typography, Link } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+
 import loginIcon from ".././assets/loginIcon.svg";
 import { Field, Form } from "react-final-form";
 import { loginUser } from "../helpers/dataActions";
@@ -46,6 +47,7 @@ export default function Login() {
                   placeholder="Password"
                 />
 
+
                 <button type="submit" className="btn-primary">
                   Login
                 </button>
@@ -61,9 +63,10 @@ export default function Login() {
               </form>
             )}
           />
+
         </div>
         <div className="sm:hidden">
-          <img src={loginIcon} alt="" />{" "}
+          <img src={loginIcon} alt="" />
         </div>
       </div>
     </div>
