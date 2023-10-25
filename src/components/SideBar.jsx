@@ -4,7 +4,6 @@ import { Button, Typography } from "@mui/material";
 import profilePicture from "../assets/undraw_relaunch_day_902d.svg";
 import { deleteUser } from "../helpers/dataActions";
 import { errorSnackBar } from "./snackbars";
-// import { getQuote } from "../server/server";
 
 export default class SideBar extends Component {
   state = {
@@ -20,7 +19,6 @@ export default class SideBar extends Component {
         this.setState({ quote: "🔭 Seems like there is a problem" });
         errorSnackBar(err.message);
       });
-    // getQuote(this.setState);
   }
 
   render() {
