@@ -1,16 +1,10 @@
-import { Button, Typography, Link } from "@mui/material";
-import TextField from "@mui/material/TextField";
+import { Typography, Link } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { successSnackBar, errorSnackBar } from "../components/snackbars";
-import usersData from "././../data/users.json";
 import loginIcon from ".././assets/loginIcon.svg";
-import { ERROR_LOGIN, SUCCESS_LOGIN } from "../constants/messages";
+import { Field, Form } from "react-final-form";
+import { loginUser } from "../helpers/dataActions";
 
 export default function Login() {
-  const [gmailUser, setGmailUser] = useState("");
-  const [userPassword, setUserPassword] = useState("");
-
   const navigate = useNavigate();
 
   return (
@@ -25,71 +19,49 @@ export default function Login() {
               Login
             </Typography>
 
-            <Typography sx={{ fontFamily: "Gabarito" }} variant="p">
+            <Typography style={{ fontFamily: "Gabarito" }} variant="p">
               Reach your goals, stay organised.
             </Typography>
           </div>
-          <div className="flex flex-col">
-            <TextField
-              onChange={(e) => setGmailUser(e.target.value)}
-              style={{
-                width: 280,
-              }}
-              id="outlined-basic"
-              label="Email"
-              variant="outlined"
-            />
+          <Form
+            onSubmit={(e) =>
+              loginUser(e.gmailUser, e.userPassword) && navigate("/home")
+            }
+            initialValues={{ gmailUser: "", userPassword: "" }}
+            render={({ handleSubmit }) => (
+              <form onSubmit={handleSubmit} className="flex flex-col">
+                <Field
+                  type="text"
+                  name="gmailUser"
+                  component="input"
+                  className="input-primary"
+                  placeholder="Email"
+                />
 
-            <TextField
-              type="password"
-              onChange={(e) => setUserPassword(e.target.value)}
-              style={{
-                width: 280,
-                marginBottom: 1,
-                marginTop: 19,
-              }}
-              id="outlined-basic"
-              label="Password"
-              variant="outlined"
-            />
+                <Field
+                  type="password"
+                  name="userPassword"
+                  component="input"
+                  className="input-primary"
+                  placeholder="Password"
+                />
 
-            <Link
-              style={{ textAlign: "right", fontSize: "16px" }}
-              href="/register"
-            >
-              No account? Make one!
-            </Link>
-          </div>
-          <Button
-            onClick={() => {
-              const res = usersData.users.find(
-                (user) =>
-                  user.email === gmailUser && user.paswword === userPassword
-              );
-
-              if (res) {
-                localStorage.setItem("user", JSON.stringify(res));
-                successSnackBar(SUCCESS_LOGIN);
-                navigate("/home");
-              } else {
-                errorSnackBar(ERROR_LOGIN);
-                // used custom created snackbars
-              }
-            }}
-            style={{
-              borderRadius: 0,
-              backgroundColor: "#3F3D56",
-              padding: "12px 0px",
-              marginTop: 5,
-              fontSize: "16px",
-            }}
-            variant="contained"
-          >
-            Login
-          </Button>
+                <button type="submit" className="btn-primary">
+                  Login
+                </button>
+                <Link
+                  style={{
+                    textAlign: "right",
+                    fontSize: "16px",
+                  }}
+                  href="/register"
+                >
+                  No account? Make one!
+                </Link>
+              </form>
+            )}
+          />
         </div>
-
-        {/* hides the image when the screen size is less or equal to 768 */}
         <div className="sm:hidden">
           <img src={loginIcon} alt="" />{" "}
         </div>
