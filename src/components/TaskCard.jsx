@@ -26,7 +26,7 @@ export default function TaskCard({ task, setUserData }) {
             tasks: prev.tasks?.filter(({ id }) => id !== task.id),
           }));
         }}
-        className="material-symbols-outlined absolute right-0 mr-2"
+        className="material-symbols-outlined absolute right-0 mr-2 cursor-pointer"
       >
         delete
       </span>

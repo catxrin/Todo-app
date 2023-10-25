@@ -18,7 +18,7 @@ export default function TagsDropdown({ task, setUserData }) {
             return { ...prev };
           });
         }}
-        className="shadow-sm"
+        className="shadow-sm cursor-pointer"
         style={style("#D3E5EF")}
         variant="p"
       >
@@ -31,7 +31,7 @@ export default function TagsDropdown({ task, setUserData }) {
             return { ...prev };
           });
         }}
-        className="shadow-sm"
+        className="shadow-sm cursor-pointer"
         style={style("#E8DEEE")}
         variant="p"
       >
@@ -45,7 +45,7 @@ export default function TagsDropdown({ task, setUserData }) {
             return { ...prev };
           });
         }}
-        className="shadow-sm"
+        className="shadow-sm cursor-pointer"
         style={style("#DBEDDB")}
         variant="p"
       >

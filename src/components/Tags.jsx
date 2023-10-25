@@ -15,7 +15,7 @@ export default function Tags({ task, setUserData }) {
         onClick={() => setShowOptions(!showOptions)}
         className={`${
           tagColors[task.status]
-        } px-1 rounded-lg text-center flex self-start mt-1 relative`}
+        } px-1 rounded-lg text-center flex self-start mt-1 relative cursor-pointer`}
       >
         <Typography
           style={{
