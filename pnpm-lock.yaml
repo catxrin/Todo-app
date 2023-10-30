@@ -14,6 +14,9 @@ dependencies:
   '@mui/material':
     specifier: ^5.14.12
     version: 5.14.12(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(@types/react@18.2.15)(react-dom@18.2.0)(react@18.2.0)
+  awesome-snackbar:
+    specifier: ^2.0.7
+    version: 2.0.7
   express:
     specifier: ^4.18.2
     version: 4.18.2
@@ -1152,6 +1155,10 @@ packages:
     resolution: {integrity: sha512-DMD0KiN46eipeziST1LPP/STfDU0sufISXmjSgvVsoU2tqxctQeASejWcfNtxYKqETM1UxQ8sp2OrSBWpHY6sw==}
     engines: {node: '>= 0.4'}
     dev: true
+
+  /awesome-snackbar@2.0.7:
+    resolution: {integrity: sha512-5UxE5Vgw+E+PcG5rVgFCPaLNj1P3N9uLkOvHqTvs2LL6x09YAJLZ2yv5XKkdTE7941GkC2L8BQvV5vaaif2XHw==}
+    dev: false
 
   /babel-plugin-macros@3.1.0:
     resolution: {integrity: sha512-Cg7TFGpIr01vOQNODXOOaGz2NpCU5gl8x1qJFbb6hbZxR7XrcE2vtbAsTAbJ7/xwJtUuJEw8K8Zr/AE0LHlesg==}
