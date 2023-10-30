@@ -7,8 +7,13 @@ import {
   SUCCESS_REGISTER,
 } from "../constants/messages";
 
-const usersData =
+let usersData =
   Object.values(localStorage).map((data) => JSON.parse(data)) || [];
+
+export const deleteUser = (gmailUser) => {
+  localStorage.removeItem(gmailUser);
+  usersData = Object.values(localStorage).map((data) => JSON.parse(data)) || [];
+};
 
 export const addUser = (username, gmailUser, userPassword) => {
   const checkForUser = usersData?.find((user) => user.email === gmailUser);
@@ -17,7 +22,7 @@ export const addUser = (username, gmailUser, userPassword) => {
     errorSnackBar(USER_EXIST);
   } else {
     if (gmailUser === "" || username === "" || userPassword === "") {
-      errorSnackBar("Do not leave empty fields");
+      errorSnackBar(NO_EMPTY_FIELDS);
     } else {
       const newUser = {
         username: username,
@@ -43,6 +48,7 @@ export const loginUser = (gmailUser, userPassword) => {
   if (checkForUser) {
     localStorage.setItem(gmailUser, JSON.stringify(checkForUser));
     successSnackBar(SUCCESS_LOGIN);
+    sessionStorage.setItem("loggedIn", gmailUser);
     return true;
   } else if (gmailUser === "" || userPassword === "") {
     errorSnackBar(NO_EMPTY_FIELDS);

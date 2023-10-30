@@ -10,6 +10,7 @@ export default function Register() {
     gmailUser: "",
     userPassword: "",
     username: "",
+    todos: [],
   });
 
   const handleInputChange = (event) => {
@@ -49,6 +50,7 @@ export default function Register() {
               }}
               id="outlined-basic"
               label="Username"
+              type="text"
               variant="outlined"
             />
             <TextField
@@ -61,6 +63,7 @@ export default function Register() {
               id="outlined-basic"
               label="Email"
               variant="outlined"
+              type="email"
             />
 
             <TextField
