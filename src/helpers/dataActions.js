@@ -56,6 +56,7 @@ export function maxLength(max) {
 export const addUser = (data) => {
   const checkForUser = usersData?.find((user) => user.email === data.gmailUser);
 
+
   if (checkForUser) {
     errorSnackBar(USER_EXIST);
   } else {
@@ -79,6 +80,7 @@ export const addUser = (data) => {
       errorSnackBar("Passwords does not match!");
     } else if (validatePassword(data.userPassword) !== undefined) {
       errorSnackBar(validatePassword());
+
     } else {
       const newUser = {
         username: data.username,
@@ -106,6 +108,7 @@ export const loginUser = (gmailUser, userPassword) => {
   if (checkForUser) {
     localStorage.setItem(gmailUser, JSON.stringify(checkForUser));
     successSnackBar(SUCCESS_LOGIN);
+    sessionStorage.setItem("loggedIn", gmailUser);
     return true;
   } else if (gmailUser === "" || userPassword === "") {
     errorSnackBar(NO_EMPTY_FIELDS);
