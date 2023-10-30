@@ -4,6 +4,10 @@ import Collon from "../components/Collon";
 import { useState, useEffect } from "react";
 import SideBar from "../components/SideBar";
 import { nanoid } from "nanoid";
+import { db } from "../config/firebase";
+import { getDocs, collection } from "firebase/firestore";
+import { errorSnackBar } from "../components/snackbars";
+import { auth } from "../config/firebase";
 
 export default function Home() {
   const [currentTask, setCurrentTask] = useState("");
@@ -14,6 +18,21 @@ export default function Home() {
   const [userData, setUserData] = useState(
     JSON.parse(localStorage.getItem(userEmail))
   );
+
+  const usersCollection = collection(db, "users");
+
+  useEffect(() => {
+    try {
+      const getUsers = async () => {
+        const data = await getDocs(usersCollection);
+        console.log(data);
+        console.log(auth.currentUser);
+      };
+      getUsers();
+    } catch (err) {
+      errorSnackBar(err);
+    }
+  }, []);
 
   useEffect(() => {
     localStorage.setItem(userEmail, JSON.stringify(userData));

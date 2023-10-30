@@ -4,7 +4,8 @@ import { Button, Typography } from "@mui/material";
 import profilePicture from "../assets/undraw_relaunch_day_902d.svg";
 import { deleteUser } from "../helpers/dataActions";
 import { errorSnackBar } from "./snackbars";
-
+import { auth } from "../config/firebase";
+import { signOut } from "@firebase/auth";
 export default class SideBar extends Component {
   state = {
     quote: [],
@@ -38,9 +39,11 @@ export default class SideBar extends Component {
           >
             Welcome, {this.props.username}
           </Typography>
+
           <div className="shadow-sm shadow-[#cccccccc] bg-white border-x-4 border-black rounded p-2 mb-5 mt-3">
             <Typography variant="p">“{this.state.quote}„</Typography>
           </div>
+
           <div className="flex flex-row gap-3 justify-center">
             <Button
               href="/"
@@ -55,9 +58,15 @@ export default class SideBar extends Component {
 
             <Button
               href="/"
-              onClick={() => {
+              onClick={async () => {
                 sessionStorage.removeItem("loggedIn");
                 window.location.reload(true);
+
+                try {
+                  await signOut(auth);
+                } catch (err) {
+                  errorSnackBar(err.message);
+                }
               }}
               className="btn-primary-small"
               variant="contained"
