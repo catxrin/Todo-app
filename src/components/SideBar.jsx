@@ -2,7 +2,7 @@ import { Component } from "react";
 import axios from "axios";
 import { Button, Typography } from "@mui/material";
 import profilePicture from "../assets/undraw_relaunch_day_902d.svg";
-import { deleteUser } from "../helpers/dataActions";
+// import { deleteUser } from "../helpers/dataActions";
 import { errorSnackBar } from "./snackbars";
 import { auth } from "../config/firebase";
 import { signOut } from "@firebase/auth";
@@ -48,7 +48,7 @@ export default class SideBar extends Component {
             <Button
               href="/"
               onClick={() => {
-                deleteUser(this.props.userEmail);
+                // deleteUser(this.props.userEmail);
               }}
               className="btn-primary-small"
               variant="contained"
@@ -61,7 +61,6 @@ export default class SideBar extends Component {
               onClick={async () => {
                 sessionStorage.removeItem("loggedIn");
                 window.location.reload(true);
-
                 try {
                   await signOut(auth);
                 } catch (err) {

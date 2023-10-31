@@ -5,9 +5,9 @@ import { useState, useEffect } from "react";
 import SideBar from "../components/SideBar";
 import { nanoid } from "nanoid";
 import { db } from "../config/firebase";
-import { getDocs, collection } from "firebase/firestore";
-import { errorSnackBar } from "../components/snackbars";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { auth } from "../config/firebase";
+import { userUid } from "../config/firebase";
 
 export default function Home() {
   const [currentTask, setCurrentTask] = useState("");
@@ -15,32 +15,32 @@ export default function Home() {
   const userEmail = sessionStorage.getItem("loggedIn");
   const id = nanoid();
 
-  const [userData, setUserData] = useState(
-    JSON.parse(localStorage.getItem(userEmail))
-  );
+  const [userData, setUserData] = useState();
+  const updateUser = async (data) => {
+    const docRef = doc(db, "users", auth.currentUser.uid);
+    await updateDoc(docRef, data);
+  };
 
-  const usersCollection = collection(db, "users");
+  async function getUser() {
+    console.log(auth);
+    const docRef = doc(db, "users", auth.currentUser.uid);
+    const docSnap = await getDoc(docRef);
+    setUserData(docSnap.data());
+  }
 
   useEffect(() => {
-    try {
-      const getUsers = async () => {
-        const data = await getDocs(usersCollection);
-        console.log(data);
-        console.log(auth.currentUser);
-      };
-      getUsers();
-    } catch (err) {
-      errorSnackBar(err);
-    }
+    getUser();
   }, []);
 
   useEffect(() => {
-    localStorage.setItem(userEmail, JSON.stringify(userData));
-  }, [JSON.stringify(userData), userEmail]);
+    updateUser({
+      tasks: userData?.tasks,
+    });
+  }, [userData, []]);
 
   return (
     <div className="flex flex-row sm:flex-col">
-      <SideBar username={userData.username} userEmail={userEmail} />
+      <SideBar username={userData?.username} userEmail={userEmail} />
 
       <div className="flex flex-col sm:px-10 gap-1 h-screen sm:h-auto justify-center place-items-center m-auto">
         <div className="flex flex-row gap-1">
@@ -90,7 +90,7 @@ export default function Home() {
           <Collon
             label="Todo"
             color="bg-[#F5FAFC]"
-            data={userData.tasks
+            data={userData?.tasks
               ?.filter((t) => t.status === "Todo")
               .map((task) => (
                 <TaskCard
@@ -104,7 +104,7 @@ export default function Home() {
           <Collon
             color="bg-[#FBF9FD]"
             label="In Progress 🔥"
-            data={userData.tasks
+            data={userData?.tasks
               ?.filter((t) => t.status === "In Progress")
               .map((task) => (
                 <TaskCard
@@ -118,7 +118,7 @@ export default function Home() {
           <Collon
             label="Done 🚀"
             color="bg-[#F7FAF7]"
-            data={userData.tasks
+            data={userData?.tasks
               ?.filter((t) => t.status === "Done")
               .map((task) => (
                 <TaskCard

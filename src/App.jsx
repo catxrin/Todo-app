@@ -11,7 +11,11 @@ function App() {
       path: "/home",
       element: (
         <Suspense fallback={<Loading />}>
+          {/* {!sessionStorage.getItem("loggedIn") ? (
+            <h1>You need to login first</h1>
+          ) : ( */}
           <HomePage />
+          {/* )} */}
         </Suspense>
       ),
     },

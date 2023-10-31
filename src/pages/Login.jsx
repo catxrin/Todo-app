@@ -5,21 +5,8 @@ import loginIcon from ".././assets/loginIcon.svg";
 import { Field, Form } from "react-final-form";
 import { loginUser } from "../helpers/dataActions";
 
-import { auth } from "../config/firebase";
-import { signInWithEmailAndPassword } from "@firebase/auth";
-import { errorSnackBar } from "../components/snackbars";
-
 export default function Login() {
   const navigate = useNavigate();
-
-  const logIn = async (data) => {
-    try {
-      await signInWithEmailAndPassword(auth, data.gmailUser, data.userPassword);
-      console.log(auth.currentUser);
-    } catch (err) {
-      errorSnackBar(err.message);
-    }
-  };
 
   return (
     <div className="bg-gradient-to-br from-gray-700 via-gray-900 to-black flex justify-center items-center w-full h-screen sm:bg-gradient-to-br sm:from-white sm:to-white">
@@ -38,9 +25,9 @@ export default function Login() {
             </Typography>
           </div>
           <Form
-            onSubmit={(e) => {
-              logIn(e);
-              loginUser(e.gmailUser, e.userPassword) && navigate("/home");
+            onSubmit={async (e) => {
+              (await loginUser(e.gmailUser, e.userPassword)) &&
+                navigate("/home");
             }}
             initialValues={{ gmailUser: "", userPassword: "" }}
             render={({ handleSubmit }) => (

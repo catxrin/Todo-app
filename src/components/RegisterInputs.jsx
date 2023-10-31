@@ -6,42 +6,11 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useState, useEffect } from "react";
 import { getCountriesData } from "../server/server";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { setDoc, doc } from "firebase/firestore";
-import { auth, db } from "../config/firebase";
-import { errorSnackBar } from "./snackbars";
 
 export default function RegisterInputs() {
   const [countriesData, setCountriesData] = useState([]);
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
-
-  const signIn = async (data) => {
-    try {
-      await createUserWithEmailAndPassword(
-        auth,
-        data.gmailUser,
-        data.userPassword
-      );
-    } catch (err) {
-      errorSnackBar(err);
-    }
-  };
-
-  const createUserDataCollection = async (data) => {
-    try {
-      console.log(auth.currentUser.uid);
-      await setDoc(doc(db, "users", auth.currentUser.uid), {
-        country: data.country,
-        phone: data.phone,
-        tasks: [],
-        username: data.username,
-      });
-    } catch (err) {
-      console.log(auth.currentUser.uid);
-      errorSnackBar("Message from register form", err);
-    }
-  };
 
   useEffect(() => {
     getCountriesData(setCountriesData);
@@ -49,10 +18,8 @@ export default function RegisterInputs() {
 
   return (
     <form
-      onSubmit={handleSubmit((data) => {
-        createUserDataCollection(data);
-        signIn(data);
-        addUser(data) && navigate("/");
+      onSubmit={handleSubmit(async (data) => {
+        (await addUser(data)) && navigate("/");
       })}
       className="flex flex-col gap-2"
     >
