@@ -9,7 +9,7 @@ const snackMessageTemplate = (message, icon) =>
   `;
 
 const snackDefaultSettings = (color) => ({
-  position: "bottom-center",
+  position: "bottom-right",
   timeout: 1800,
   style: {
     container: [["border-left", `6px solid ${color}`]],

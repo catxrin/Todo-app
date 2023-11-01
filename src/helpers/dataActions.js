@@ -5,18 +5,14 @@ import { setDoc, doc } from "firebase/firestore";
 import { auth, db } from "../config/firebase";
 import { signInWithEmailAndPassword } from "@firebase/auth";
 
-// export const deleteUser = (gmailUser) => {
-//   localStorage.removeItem(gmailUser);
-//   usersData = Object.values(localStorage).map((data) => JSON.parse(data)) || [];
-// };
-
 export function required(value) {
   return value != null && value !== "" ? undefined : "This field is required";
 }
 
 export const regexPhone = /^[0-9+]+$/;
+
 export function validatePhone(value) {
-  return value && regexPhone.test(value) ? undefined : "Wrong format";
+  return value && regexPhone.test(value) ? undefined : "Wrong phone format";
 }
 
 export const regexEmail =
@@ -30,9 +26,7 @@ export const regexPassword =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9_])/;
 
 export function validatePassword(value) {
-  return value && regexPassword.test(value)
-    ? undefined
-    : "Wrong password format";
+  return value && regexPassword.test(value) ? undefined : "Wrong format";
 }
 
 export function minLength(min) {
@@ -66,9 +60,8 @@ export const loginUser = async (gmailUser, userPassword) => {
     errorSnackBar(NO_EMPTY_FIELDS);
   } else {
     try {
-      sessionStorage.setItem("loggedIn", gmailUser);
-
       await signInWithEmailAndPassword(auth, gmailUser, userPassword);
+      localStorage.setItem("loggedIn", gmailUser);
       return true;
     } catch (err) {
       errorSnackBar(err.message);

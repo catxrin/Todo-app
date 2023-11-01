@@ -1,7 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "@firebase/auth";
 import { getFirestore } from "firebase/firestore";
-// import { doc, getDoc } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAUx3vdDuoUaN8tsqIPuXSGJSEEM3Tfw-o",
@@ -15,23 +14,3 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
-
-// async function getUser() {
-//   console.log(auth);
-//   const docRef = doc(db, "users", auth.currentUser.uid);
-//   const docSnap = await getDoc(docRef);
-//   return await docSnap._document.data.value.mapValue.fields;
-// }
-
-// auth.onAuthStateChanged(async (user) => {
-//   if (user) {
-//     localStorage.setItem("user", JSON.stringify(await getUser()));
-//   } else {
-//     localStorage.removeItem("user");
-//   }
-// });
-export const userUid = await auth.onAuthStateChanged(function (user) {
-  if (user) {
-    return user.uid;
-  }
-});

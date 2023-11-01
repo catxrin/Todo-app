@@ -33,6 +33,7 @@ export default function Login() {
             render={({ handleSubmit }) => (
               <form onSubmit={handleSubmit} className="flex flex-col">
                 <Field
+                  autoComplete="on"
                   type="text"
                   name="gmailUser"
                   component="input"
@@ -41,6 +42,7 @@ export default function Login() {
                 />
 
                 <Field
+                  autoComplete="on"
                   type="password"
                   name="userPassword"
                   component="input"

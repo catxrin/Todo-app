@@ -26,6 +26,7 @@ export default function RegisterInputs() {
       <div className="flex flex-row gap-5 sm:flex sm:flex-col sm:gap-3">
         <div className="flex flex-col gap-3">
           <input
+            autoComplete="on"
             {...register("username")}
             name="username"
             className="input-primary"
@@ -34,6 +35,7 @@ export default function RegisterInputs() {
           />
 
           <input
+            autoComplete="on"
             {...register("gmailUser")}
             name="gmailUser"
             className="input-primary"
@@ -42,6 +44,7 @@ export default function RegisterInputs() {
           />
 
           <input
+            autoComplete="on"
             {...register("phone")}
             className="input-primary"
             placeholder="Phone"
@@ -59,6 +62,7 @@ export default function RegisterInputs() {
             )}
           />
           <input
+            autoComplete="on"
             {...register("userPassword")}
             type="password"
             name="userPassword"
@@ -67,6 +71,7 @@ export default function RegisterInputs() {
           />
 
           <input
+            autoComplete="on"
             type="password"
             {...register("confirmPassword")}
             name="confirmPassword"

@@ -1,23 +1,32 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Suspense, lazy } from "react";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  Navigate,
+} from "react-router-dom";
+
 import Loading from "./components/Loading";
+import ErrorPage from "./components/ErrorPage";
+
 const RegisterPage = lazy(() => import("./pages/Register"));
 const LoginPage = lazy(() => import("./pages/Login"));
 const HomePage = lazy(() => import("./pages/Home"));
 
 function App() {
+  function RestrictAccess() {
+    const user = localStorage.getItem("loggedIn");
+    return user ? <HomePage /> : <Navigate to="/" replace />;
+  }
+
   const router = createBrowserRouter([
     {
       path: "/home",
       element: (
         <Suspense fallback={<Loading />}>
-          {/* {!sessionStorage.getItem("loggedIn") ? (
-            <h1>You need to login first</h1>
-          ) : ( */}
-          <HomePage />
-          {/* )} */}
+          <RestrictAccess />
         </Suspense>
       ),
+      errorElement: <ErrorPage />,
     },
     {
       path: "/",
@@ -26,6 +35,7 @@ function App() {
           <LoginPage />
         </Suspense>
       ),
+      errorElement: <ErrorPage />,
     },
     {
       path: "/register",
@@ -34,6 +44,7 @@ function App() {
           <RegisterPage />
         </Suspense>
       ),
+      errorElement: <ErrorPage />,
     },
   ]);
   return <RouterProvider router={router} />;

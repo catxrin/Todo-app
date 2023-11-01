@@ -2,10 +2,10 @@ import { Component } from "react";
 import axios from "axios";
 import { Button, Typography } from "@mui/material";
 import profilePicture from "../assets/undraw_relaunch_day_902d.svg";
-// import { deleteUser } from "../helpers/dataActions";
+import { doc, deleteDoc } from "firebase/firestore";
 import { errorSnackBar } from "./snackbars";
-import { auth } from "../config/firebase";
-import { signOut } from "@firebase/auth";
+import { auth, db } from "../config/firebase";
+import { signOut, deleteUser } from "@firebase/auth";
 export default class SideBar extends Component {
   state = {
     quote: [],
@@ -46,12 +46,18 @@ export default class SideBar extends Component {
 
           <div className="flex flex-row gap-3 justify-center">
             <Button
-              href="/"
-              onClick={() => {
-                // deleteUser(this.props.userEmail);
+              onClick={async () => {
+                localStorage.removeItem("loggedIn");
+                try {
+                  deleteUser(auth.currentUser);
+                  deleteDoc(doc(db, "users", auth.currentUser.uid));
+                } catch (err) {
+                  errorSnackBar(err.message);
+                }
               }}
               className="btn-primary-small"
               variant="contained"
+              href="/"
             >
               Delete Account
             </Button>
@@ -59,8 +65,7 @@ export default class SideBar extends Component {
             <Button
               href="/"
               onClick={async () => {
-                sessionStorage.removeItem("loggedIn");
-                window.location.reload(true);
+                localStorage.removeItem("loggedIn");
                 try {
                   await signOut(auth);
                 } catch (err) {

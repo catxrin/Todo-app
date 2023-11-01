@@ -4,10 +4,9 @@ import Collon from "../components/Collon";
 import { useState, useEffect } from "react";
 import SideBar from "../components/SideBar";
 import { nanoid } from "nanoid";
-import { db } from "../config/firebase";
+import { db, auth } from "../config/firebase";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { auth } from "../config/firebase";
-import { userUid } from "../config/firebase";
+import { onAuthStateChanged } from "@firebase/auth";
 
 export default function Home() {
   const [currentTask, setCurrentTask] = useState("");
@@ -16,16 +15,26 @@ export default function Home() {
   const id = nanoid();
 
   const [userData, setUserData] = useState();
-  const updateUser = async (data) => {
-    const docRef = doc(db, "users", auth.currentUser.uid);
-    await updateDoc(docRef, data);
+
+  const updateUser = (data) => {
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const uid = user.uid;
+        const docRef = doc(db, "users", uid);
+        await updateDoc(docRef, data);
+      }
+    });
   };
 
   async function getUser() {
-    console.log(auth);
-    const docRef = doc(db, "users", auth.currentUser.uid);
-    const docSnap = await getDoc(docRef);
-    setUserData(docSnap.data());
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const uid = user.uid;
+        const docRef = doc(db, "users", uid);
+        const docSnap = await getDoc(docRef);
+        setUserData(docSnap.data());
+      }
+    });
   }
 
   useEffect(() => {
