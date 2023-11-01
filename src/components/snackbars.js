@@ -1,5 +1,7 @@
 import Snackbar from "awesome-snackbar";
 
+let globalBar;
+
 const snackMessageTemplate = (message, icon) =>
   `
     <div style="display: flex; justify-content: space-between; gap: 1em; margin: 0.2em 0; align-items: center;">
@@ -18,28 +20,32 @@ const snackDefaultSettings = (color) => ({
 });
 
 export const errorSnackBar = (message) => {
-  new Snackbar(
+  if (globalBar) globalBar.hide();
+  globalBar = new Snackbar(
     snackMessageTemplate(message, "❌"),
     snackDefaultSettings("#DC343B")
   );
 };
 
 export const warningSnackBar = (message) => {
-  new Snackbar(
+  if (globalBar) globalBar.hide();
+  globalBar = new Snackbar(
     snackMessageTemplate(message, "⚠"),
     snackDefaultSettings("#ffd400")
   );
 };
 
 export const infoSnackBar = (message) => {
-  new Snackbar(
+  if (globalBar) globalBar.hide();
+  globalBar = new Snackbar(
     snackMessageTemplate(message, "ℹ"),
     snackDefaultSettings("#007cb7")
   );
 };
 
 export const successSnackBar = (message) => {
-  new Snackbar(
+  if (globalBar) globalBar.hide();
+  globalBar = new Snackbar(
     snackMessageTemplate(message, "✅"),
     snackDefaultSettings("#39a845")
   );
