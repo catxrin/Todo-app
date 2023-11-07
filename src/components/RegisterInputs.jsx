@@ -1,11 +1,11 @@
 import { Autocomplete } from "@mui/material";
-import { Link } from "@mui/material";
 import { addUser } from "../helpers/dataActions";
 import TextField from "@mui/material/TextField";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useState, useEffect } from "react";
 import { getCountriesData } from "../server/server";
+import { HAVE_AN_ACCOUNT } from "../constants/messages";
 
 export default function RegisterInputs() {
   const [countriesData, setCountriesData] = useState([]);
@@ -19,7 +19,9 @@ export default function RegisterInputs() {
   return (
     <form
       onSubmit={handleSubmit(async (data) => {
-        (await addUser(data)) && navigate("/");
+        if (await addUser(data)) {
+          navigate("/");
+        }
       })}
       className="flex flex-col gap-2"
     >
@@ -31,7 +33,6 @@ export default function RegisterInputs() {
             name="username"
             className="input-primary"
             placeholder="Username"
-            type="text"
           />
 
           <input
@@ -40,7 +41,7 @@ export default function RegisterInputs() {
             name="gmailUser"
             className="input-primary"
             placeholder="Email"
-            type="text"
+            type="email"
           />
 
           <input
@@ -48,7 +49,6 @@ export default function RegisterInputs() {
             {...register("phone")}
             className="input-primary"
             placeholder="Phone"
-            type="text"
             name="phone"
           />
         </div>
@@ -84,8 +84,9 @@ export default function RegisterInputs() {
       <button type="submint" className="btn-primary">
         Register
       </button>
-      <Link style={{ textAlign: "right", fontSize: "16px" }} href="/">
-        Already have an account? Login!
+
+      <Link className="form-links" to="/">
+        {HAVE_AN_ACCOUNT}
       </Link>
     </form>
   );

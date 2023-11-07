@@ -25,10 +25,6 @@ export function validateEmail(value) {
 export const regexPassword =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9_])/;
 
-export function validatePassword(value) {
-  return value && regexPassword.test(value) ? undefined : "Wrong format";
-}
-
 export function minLength(min) {
   return (value) =>
     value.length >= min
@@ -49,9 +45,8 @@ const signIn = async (data) => {
       data.gmailUser,
       data.userPassword
     );
-    successSnackBar(SUCCESS_REGISTER);
   } catch (err) {
-    errorSnackBar(err);
+    errorSnackBar(err.message);
   }
 };
 
@@ -64,7 +59,7 @@ export const loginUser = async (gmailUser, userPassword) => {
       localStorage.setItem("loggedIn", gmailUser);
       return true;
     } catch (err) {
-      errorSnackBar(err.message);
+      errorSnackBar("Incorrect email or password!");
     }
   }
 };
@@ -82,29 +77,63 @@ const createUserDataCollection = async (data) => {
   }
 };
 
-export const addUser = async (data) => {
-  if (Object.values(data).some((value) => required(value) !== undefined)) {
-    errorSnackBar(required());
-  } else if (
-    (validatePhone(data.phone) || validateEmail(data.gmailUser)) !== undefined
-  ) {
-    errorSnackBar(validatePhone());
-  } else if (
-    (minLength(3)(data.username) || maxLength(10)(data.username)) !== undefined
-  ) {
-    errorSnackBar("Username should be 3 to 10 characters.");
-  } else if (
-    (minLength(6)(data.userPassword) || maxLength(20)(data.userPassword)) !==
-    undefined
-  ) {
+const validatePassword = (password, confirmPassword) => {
+  if (minLength(6)(password) || maxLength(20)(password)) {
     errorSnackBar("Password should be 6 to 20 characters.");
-  } else if (data.userPassword !== data.confirmPassword) {
+    return false;
+  }
+  if (password !== confirmPassword) {
     errorSnackBar("Passwords does not match!");
-  } else if (validatePassword(data.userPassword) !== undefined) {
-    errorSnackBar(validatePassword());
-  } else {
+    return false;
+  }
+  if (!regexPassword.test(password)) {
+    errorSnackBar("Wrong format");
+    return false;
+  }
+  return true;
+};
+
+const validateUsername = (username) => {
+  if (minLength(3)(username) || maxLength(10)(username)) {
+    errorSnackBar("Username should be 3 to 10 characters.");
+    return false;
+  }
+  return true;
+};
+
+const validateEmptyFields = (data) => {
+  if (Object.values(data).some((value) => required(value))) {
+    errorSnackBar(required());
+    return false;
+  }
+  return true;
+};
+
+const validatePhoneAndEmail = (phone, email) => {
+  if (validatePhone(phone) || validateEmail(email)) {
+    errorSnackBar(validatePhone());
+    return false;
+  }
+  return true;
+};
+
+const validateData = (data) => {
+  if (!validateEmptyFields(data)) return false;
+
+  if (!validatePhoneAndEmail(data.phone, data.gmailUser)) return false;
+
+  if (!validateUsername(data.username)) return false;
+
+  if (!validatePassword(data.userPassword, data.confirmPassword)) return false;
+
+  return true;
+};
+
+export const addUser = async (data) => {
+  if (validateData(data)) {
     await signIn(data);
     await createUserDataCollection(data);
+    successSnackBar(SUCCESS_REGISTER);
     return true;
   }
 };

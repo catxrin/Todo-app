@@ -9,12 +9,12 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "@firebase/auth";
 
 export default function Home() {
+  const userEmail = sessionStorage.getItem("loggedIn");
   const [currentTask, setCurrentTask] = useState("");
   const [rotate, setRotate] = useState(false);
-  const userEmail = sessionStorage.getItem("loggedIn");
-  const id = nanoid();
-
   const [userData, setUserData] = useState();
+  const [tasksUser, setTasksUser] = useState(userData?.tasks);
+  const id = nanoid();
 
   const updateUser = (data) => {
     onAuthStateChanged(auth, async (user) => {
@@ -25,7 +25,6 @@ export default function Home() {
       }
     });
   };
-
   async function getUser() {
     onAuthStateChanged(auth, async (user) => {
       if (user) {
@@ -39,25 +38,26 @@ export default function Home() {
 
   useEffect(() => {
     getUser();
+    setTasksUser(userData?.tasks);
   }, []);
 
   useEffect(() => {
     updateUser({
       tasks: userData?.tasks,
     });
-  }, [userData, []]);
+    setTasksUser(userData?.tasks);
+  }, [userData]);
 
   return (
-    <div className="flex flex-row sm:flex-col">
+    <div className="flex flex-row sm:flex-col sm:w-screen">
       <SideBar username={userData?.username} userEmail={userEmail} />
-
-      <div className="flex flex-col sm:px-10 gap-1 h-screen sm:h-auto justify-center place-items-center m-auto">
-        <div className="flex flex-row gap-1">
+      <div className="flex flex-col gap-1 w-full h-screen sm:mb-10 sm:h-auto justify-center place-items-center m-auto">
+        <div className="flex flex-row gap-1 ">
           <TextField
             value={currentTask}
             onChange={(e) => setCurrentTask(e.target.value)}
             onKeyPress={(e) => {
-              if (e.key === "Enter") {
+              if (e.key === "Enter" && currentTask.trim().length > 0) {
                 setUserData((prev) => {
                   prev?.tasks.push({
                     task: currentTask.trim(),
@@ -70,9 +70,9 @@ export default function Home() {
               }
             }}
             style={{
-              width: 500,
               marginBottom: 30,
             }}
+            className="sm:w-[65vw] w-[40vw]"
             id="outlined-basic"
             label="Write your tasks here..."
             variant="outlined"
@@ -80,10 +80,7 @@ export default function Home() {
           <div>
             <span
               onClick={() => {
-                setUserData({
-                  ...userData,
-                  tasks: userData.tasks.reverse(),
-                });
+                setTasksUser(tasksUser.reverse());
                 setRotate(!rotate);
               }}
               className={`material-symbols-outlined text-[50px] text-[#3F3D56] ${
@@ -94,12 +91,11 @@ export default function Home() {
             </span>
           </div>
         </div>
-
-        <div className="flex flex-row sm:flex-col justify-between gap-8 items-end">
+        <div className="flex flex-row sm:flex-col mx-10 justify-between gap-8 items-end">
           <Collon
             label="Todo"
             color="bg-[#F5FAFC]"
-            data={userData?.tasks
+            data={tasksUser
               ?.filter((t) => t.status === "Todo")
               .map((task) => (
                 <TaskCard
@@ -113,7 +109,7 @@ export default function Home() {
           <Collon
             color="bg-[#FBF9FD]"
             label="In Progress 🔥"
-            data={userData?.tasks
+            data={tasksUser
               ?.filter((t) => t.status === "In Progress")
               .map((task) => (
                 <TaskCard
@@ -127,7 +123,7 @@ export default function Home() {
           <Collon
             label="Done 🚀"
             color="bg-[#F7FAF7]"
-            data={userData?.tasks
+            data={tasksUser
               ?.filter((t) => t.status === "Done")
               .map((task) => (
                 <TaskCard

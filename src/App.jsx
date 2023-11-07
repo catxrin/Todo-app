@@ -1,29 +1,22 @@
 import { Suspense, lazy } from "react";
-import {
-  createBrowserRouter,
-  RouterProvider,
-  Navigate,
-} from "react-router-dom";
-
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Loading from "./components/Loading";
+import PageNotFound from "./components/PageNotFound";
 import ErrorPage from "./components/ErrorPage";
-
+import PrivateRoute from "./components/PrivateRoute";
 const RegisterPage = lazy(() => import("./pages/Register"));
 const LoginPage = lazy(() => import("./pages/Login"));
 const HomePage = lazy(() => import("./pages/Home"));
 
 function App() {
-  function RestrictAccess() {
-    const user = localStorage.getItem("loggedIn");
-    return user ? <HomePage /> : <Navigate to="/" replace />;
-  }
-
   const router = createBrowserRouter([
     {
       path: "/home",
       element: (
         <Suspense fallback={<Loading />}>
-          <RestrictAccess />
+          <PrivateRoute>
+            <HomePage />
+          </PrivateRoute>
         </Suspense>
       ),
       errorElement: <ErrorPage />,
@@ -45,6 +38,14 @@ function App() {
         </Suspense>
       ),
       errorElement: <ErrorPage />,
+    },
+    {
+      path: "*",
+      element: (
+        <Suspense fallback={<Loading />}>
+          <PageNotFound />
+        </Suspense>
+      ),
     },
   ]);
   return <RouterProvider router={router} />;
