@@ -9,7 +9,6 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "@firebase/auth";
 
 export default function Home() {
-  const userEmail = sessionStorage.getItem("loggedIn");
   const [currentTask, setCurrentTask] = useState("");
   const [rotate, setRotate] = useState(false);
   const [userData, setUserData] = useState();
@@ -41,16 +40,20 @@ export default function Home() {
     setTasksUser(userData?.tasks);
   }, []);
 
-  useEffect(() => {
-    updateUser({
-      tasks: userData?.tasks,
-    });
-    setTasksUser(userData?.tasks);
-  }, [userData]);
+  useEffect(
+    () => {
+      updateUser({
+        tasks: userData?.tasks,
+      });
+      setTasksUser(userData?.tasks);
+    },
+    [userData],
+    []
+  );
 
   return (
     <div className="flex flex-row sm:flex-col sm:w-screen">
-      <SideBar username={userData?.username} userEmail={userEmail} />
+      <SideBar username={userData?.username} />
       <div className="flex flex-col gap-1 w-full h-screen sm:mb-10 sm:h-auto justify-center place-items-center m-auto">
         <div className="flex flex-row gap-1 ">
           <TextField

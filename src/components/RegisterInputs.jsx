@@ -1,11 +1,12 @@
 import { Autocomplete } from "@mui/material";
-import { addUser } from "../helpers/dataActions";
+import { addUserToDb } from "../helpers/dataActions";
 import TextField from "@mui/material/TextField";
 import { useNavigate, Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { useState, useEffect } from "react";
 import { getCountriesData } from "../server/server";
-import { HAVE_AN_ACCOUNT } from "../constants/messages";
+import { HAVE_AN_ACCOUNT, SUCCESS_REGISTER } from "../constants/messages";
+import { successSnackBar } from "./snackbars";
 
 export default function RegisterInputs() {
   const [countriesData, setCountriesData] = useState([]);
@@ -19,8 +20,9 @@ export default function RegisterInputs() {
   return (
     <form
       onSubmit={handleSubmit(async (data) => {
-        if (await addUser(data)) {
+        if (await addUserToDb(data)) {
           navigate("/");
+          successSnackBar(SUCCESS_REGISTER);
         }
       })}
       className="flex flex-col gap-2"
@@ -28,7 +30,6 @@ export default function RegisterInputs() {
       <div className="flex flex-row gap-5 sm:flex sm:flex-col sm:gap-3">
         <div className="flex flex-col gap-3">
           <input
-            autoComplete="on"
             {...register("username")}
             name="username"
             className="input-primary"
@@ -36,16 +37,13 @@ export default function RegisterInputs() {
           />
 
           <input
-            autoComplete="on"
             {...register("gmailUser")}
             name="gmailUser"
             className="input-primary"
             placeholder="Email"
-            type="email"
           />
 
           <input
-            autoComplete="on"
             {...register("phone")}
             className="input-primary"
             placeholder="Phone"
@@ -62,7 +60,6 @@ export default function RegisterInputs() {
             )}
           />
           <input
-            autoComplete="on"
             {...register("userPassword")}
             type="password"
             name="userPassword"
@@ -71,7 +68,6 @@ export default function RegisterInputs() {
           />
 
           <input
-            autoComplete="on"
             type="password"
             {...register("confirmPassword")}
             name="confirmPassword"

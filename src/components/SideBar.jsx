@@ -6,7 +6,6 @@ import { doc, deleteDoc } from "firebase/firestore";
 import { errorSnackBar } from "./snackbars";
 import { auth, db } from "../config/firebase";
 import { signOut, deleteUser } from "@firebase/auth";
-import { Link } from "react-router-dom";
 import { PROBLEM_OCCURED, LOADING } from "../constants/messages";
 export default class SideBar extends Component {
   state = {
@@ -47,36 +46,36 @@ export default class SideBar extends Component {
           </div>
 
           <div className="flex flex-row gap-3 justify-center">
-            <Link
+            <button
               onClick={async () => {
                 try {
-                  deleteUser(auth.currentUser);
-                  deleteDoc(doc(db, "users", auth.currentUser.uid));
+                  await deleteDoc(doc(db, "users", auth.currentUser.uid));
+                  await deleteUser(auth.currentUser);
                   localStorage.removeItem("loggedIn");
+                  window.location.pathname = "/";
                 } catch (err) {
                   errorSnackBar(err.message);
                 }
               }}
               className="btn-primary-small"
-              to="/"
             >
               Delete Account
-            </Link>
+            </button>
 
-            <Link
+            <button
               onClick={async () => {
                 try {
                   await signOut(auth);
                   localStorage.removeItem("loggedIn");
+                  window.location.pathname = "/";
                 } catch (err) {
                   errorSnackBar(err.message);
                 }
               }}
               className="btn-primary-small"
-              to="/"
             >
               Logout
-            </Link>
+            </button>
           </div>
         </div>
       </div>

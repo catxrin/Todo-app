@@ -1,5 +1,5 @@
-import { errorSnackBar, successSnackBar } from "../components/snackbars";
-import { NO_EMPTY_FIELDS, SUCCESS_REGISTER } from "../constants/messages";
+import { errorSnackBar } from "../components/snackbars";
+import { NO_EMPTY_FIELDS } from "../constants/messages";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { setDoc, doc } from "firebase/firestore";
 import { auth, db } from "../config/firebase";
@@ -12,7 +12,7 @@ export function required(value) {
 export const regexPhone = /^[0-9+]+$/;
 
 export function validatePhone(value) {
-  return value && regexPhone.test(value) ? undefined : "Wrong phone format";
+  return value && regexPhone.test(value) ? undefined : "Wrong format";
 }
 
 export const regexEmail =
@@ -38,13 +38,25 @@ export function maxLength(max) {
       ? undefined
       : { text: "APP.COMMON.FORM.MOST_SYMBOLS", values: [max] };
 }
-const signIn = async (data) => {
+
+const createUserDataCollection = async (data) => {
+  await setDoc(doc(db, "users", auth.currentUser.uid), {
+    country: data.country,
+    phone: data.phone,
+    tasks: [],
+    username: data.username,
+  });
+};
+
+const addUserDataToFirebase = async (data) => {
   try {
     await createUserWithEmailAndPassword(
       auth,
       data.gmailUser,
       data.userPassword
     );
+    await createUserDataCollection(data);
+    return true;
   } catch (err) {
     errorSnackBar(err.message);
   }
@@ -64,22 +76,9 @@ export const loginUser = async (gmailUser, userPassword) => {
   }
 };
 
-const createUserDataCollection = async (data) => {
-  try {
-    await setDoc(doc(db, "users", auth.currentUser.uid), {
-      country: data.country,
-      phone: data.phone,
-      tasks: [],
-      username: data.username,
-    });
-  } catch (err) {
-    errorSnackBar(err);
-  }
-};
-
 const validatePassword = (password, confirmPassword) => {
   if (minLength(6)(password) || maxLength(20)(password)) {
-    errorSnackBar("Password should be 6 to 20 characters.");
+    errorSnackBar("Password should be from 6 to 20 characters.");
     return false;
   }
   if (password !== confirmPassword) {
@@ -87,7 +86,7 @@ const validatePassword = (password, confirmPassword) => {
     return false;
   }
   if (!regexPassword.test(password)) {
-    errorSnackBar("Wrong format");
+    errorSnackBar("Wrong password format");
     return false;
   }
   return true;
@@ -95,7 +94,7 @@ const validatePassword = (password, confirmPassword) => {
 
 const validateUsername = (username) => {
   if (minLength(3)(username) || maxLength(10)(username)) {
-    errorSnackBar("Username should be 3 to 10 characters.");
+    errorSnackBar("Username should be from 3 to 10 characters.");
     return false;
   }
   return true;
@@ -129,11 +128,6 @@ const validateData = (data) => {
   return true;
 };
 
-export const addUser = async (data) => {
-  if (validateData(data)) {
-    await signIn(data);
-    await createUserDataCollection(data);
-    successSnackBar(SUCCESS_REGISTER);
-    return true;
-  }
+export const addUserToDb = async (data) => {
+  if (validateData(data) && (await addUserDataToFirebase(data))) return true;
 };
