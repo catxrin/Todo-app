@@ -4,9 +4,7 @@ import Collon from "../components/Collon";
 import { useState, useEffect } from "react";
 import SideBar from "../components/SideBar";
 import { nanoid } from "nanoid";
-import { db, auth } from "../config/firebase";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { onAuthStateChanged } from "@firebase/auth";
+import { getUser, updateUser } from "../helpers/dataActions";
 
 export default function Home() {
   const [currentTask, setCurrentTask] = useState("");
@@ -15,41 +13,30 @@ export default function Home() {
   const [tasksUser, setTasksUser] = useState(userData?.tasks);
   const id = nanoid();
 
-  const updateUser = (data) => {
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        const uid = user.uid;
-        const docRef = doc(db, "users", uid);
-        await updateDoc(docRef, data);
-      }
-    });
-  };
-  async function getUser() {
-    onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        const uid = user.uid;
-        const docRef = doc(db, "users", uid);
-        const docSnap = await getDoc(docRef);
-        setUserData(docSnap.data());
-      }
-    });
+  function findTasks(status) {
+    return tasksUser
+      ?.filter((t) => t.status === status)
+      .map((task) => (
+        <TaskCard
+          key={task.id}
+          task={task}
+          setUserData={setUserData}
+          color="bg-[#D3E5EF]"
+        />
+      ));
   }
 
   useEffect(() => {
-    getUser();
+    getUser(setUserData);
     setTasksUser(userData?.tasks);
   }, []);
 
-  useEffect(
-    () => {
-      updateUser({
-        tasks: userData?.tasks,
-      });
-      setTasksUser(userData?.tasks);
-    },
-    [userData],
-    []
-  );
+  useEffect(() => {
+    updateUser({
+      tasks: userData?.tasks,
+    });
+    setTasksUser(userData?.tasks);
+  }, [userData, []]);
 
   return (
     <div className="flex flex-row sm:flex-col sm:w-screen">
@@ -95,47 +82,16 @@ export default function Home() {
           </div>
         </div>
         <div className="flex flex-row sm:flex-col mx-10 justify-between gap-8 items-end">
-          <Collon
-            label="Todo"
-            color="bg-[#F5FAFC]"
-            data={tasksUser
-              ?.filter((t) => t.status === "Todo")
-              .map((task) => (
-                <TaskCard
-                  key={task.id}
-                  task={task}
-                  setUserData={setUserData}
-                  color="bg-[#D3E5EF]"
-                />
-              ))}
-          />
+          <Collon label="Todo" color="bg-[#F5FAFC]" data={findTasks("Todo")} />
           <Collon
             color="bg-[#FBF9FD]"
             label="In Progress 🔥"
-            data={tasksUser
-              ?.filter((t) => t.status === "In Progress")
-              .map((task) => (
-                <TaskCard
-                  key={task.id}
-                  task={task}
-                  setUserData={setUserData}
-                  color="bg-[#D3E5EF]"
-                />
-              ))}
+            data={findTasks("In Progress")}
           />
           <Collon
             label="Done 🚀"
             color="bg-[#F7FAF7]"
-            data={tasksUser
-              ?.filter((t) => t.status === "Done")
-              .map((task) => (
-                <TaskCard
-                  key={task.id}
-                  task={task}
-                  setUserData={setUserData}
-                  color="bg-[#D3E5EF]"
-                />
-              ))}
+            data={findTasks("Done")}
           />
         </div>
       </div>

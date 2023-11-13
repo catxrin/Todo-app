@@ -1,9 +1,14 @@
 import { errorSnackBar } from "../components/snackbars";
 import { NO_EMPTY_FIELDS } from "../constants/messages";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { setDoc, doc } from "firebase/firestore";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut,
+  deleteUser,
+} from "firebase/auth";
+import { setDoc, doc, updateDoc, getDoc, deleteDoc } from "firebase/firestore";
 import { auth, db } from "../config/firebase";
-import { signInWithEmailAndPassword } from "@firebase/auth";
 
 export function required(value) {
   return value != null && value !== "" ? undefined : "This field is required";
@@ -131,3 +136,44 @@ const validateData = (data) => {
 export const addUserToDb = async (data) => {
   if (validateData(data) && (await addUserDataToFirebase(data))) return true;
 };
+
+export const updateUser = (data) => {
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      const uid = user.uid;
+      const docRef = doc(db, "users", uid);
+      await updateDoc(docRef, data);
+    }
+  });
+};
+export function getUser(setUserData) {
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      const uid = user.uid;
+      const docRef = doc(db, "users", uid);
+      const docSnap = await getDoc(docRef);
+      setUserData(docSnap.data());
+    }
+  });
+}
+
+export async function deleteCurrentUser() {
+  try {
+    await deleteDoc(doc(db, "users", auth.currentUser.uid));
+    await deleteUser(auth.currentUser);
+    localStorage.removeItem("loggedIn");
+    window.location.pathname = "/";
+  } catch (err) {
+    errorSnackBar(err.message);
+  }
+}
+
+export async function signOutUser() {
+  try {
+    await signOut(auth);
+    localStorage.removeItem("loggedIn");
+    window.location.pathname = "/";
+  } catch (err) {
+    errorSnackBar(err.message);
+  }
+}

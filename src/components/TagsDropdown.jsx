@@ -1,57 +1,31 @@
-import { Typography } from "@mui/material";
 export default function TagsDropdown({ task, setUserData }) {
-  const style = (color) => {
-    return {
-      padding: 5,
-      backgroundColor: color,
-      fontWeight: 500,
-      borderRadius: 5,
-      fontSize: 15,
-    };
-  };
+  function changeTaskStatus(newStatus) {
+    setUserData((prev) => {
+      prev.tasks.find((el) => el.id === task.id).status = newStatus;
+      return { ...prev };
+    });
+  }
+
   return (
     <div className="flex flex-row flex-wrap relative p-1 mt-2 gap-2.5 border-t-2 border-gray-200 pt-2">
-      <Typography
-        onClick={() => {
-          setUserData((prev) => {
-            prev.tasks.find((el) => el.id === task.id).status = "Todo";
-            return { ...prev };
-          });
-        }}
-        className="shadow-sm cursor-pointer"
-        style={style("#D3E5EF")}
-        variant="p"
+      <p
+        onClick={() => changeTaskStatus("Todo")}
+        className="tag-primary bg-[#D3E5EF]"
       >
         Todo
-      </Typography>
-
-      <Typography
-        onClick={() => {
-          setUserData((prev) => {
-            prev.tasks.find((el) => el.id === task.id).status = "In Progress";
-            return { ...prev };
-          });
-        }}
-        className="shadow-sm cursor-pointer"
-        style={style("#E8DEEE")}
-        variant="p"
+      </p>
+      <p
+        onClick={() => changeTaskStatus("In Progress")}
+        className="tag-primary bg-[#E8DEEE]"
       >
         Progress
-      </Typography>
-
-      <Typography
-        onClick={() => {
-          setUserData((prev) => {
-            prev.tasks.find((el) => el.id === task.id).status = "Done";
-            return { ...prev };
-          });
-        }}
-        className="shadow-sm cursor-pointer"
-        style={style("#DBEDDB")}
-        variant="p"
+      </p>
+      <p
+        onClick={() => changeTaskStatus("Done")}
+        className="tag-primary bg-[#DBEDDB]"
       >
         Done
-      </Typography>
+      </p>
     </div>
   );
 }

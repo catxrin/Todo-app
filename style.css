@@ -47,3 +47,6 @@ html {
 .form-links {
   @apply text-[16px] text-right text-blue-600 underline hover:text-blue-500;
 }
+.tag-primary {
+  @apply shadow-sm py-0.5 px-2 font-normal rounded-[5px] cursor-pointer text-[15px] font-["Gabarito"];
+}
