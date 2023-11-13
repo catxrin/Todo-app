@@ -1,16 +1,25 @@
-import { errorSnackBar } from "../components/snackbars";
-import { NO_EMPTY_FIELDS } from "../constants/messages";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { setDoc, doc } from "firebase/firestore";
-import { auth, db } from "../config/firebase";
-import { signInWithEmailAndPassword } from "@firebase/auth";
+import { errorSnackBar, successSnackBar } from "../components/snackbars";
+import {
+  SUCCESS_LOGIN,
+  ERROR_LOGIN,
+  NO_EMPTY_FIELDS,
+  USER_EXIST,
+  SUCCESS_REGISTER,
+} from "../constants/messages";
+
+let usersData =
+  Object.values(localStorage).map((data) => JSON.parse(data)) || [];
+
+export const deleteUser = (gmailUser) => {
+  localStorage.removeItem(gmailUser);
+  usersData = Object.values(localStorage).map((data) => JSON.parse(data)) || [];
+};
 
 export function required(value) {
   return value != null && value !== "" ? undefined : "This field is required";
 }
 
 export const regexPhone = /^[0-9+]+$/;
-
 export function validatePhone(value) {
   return value && regexPhone.test(value) ? undefined : "Wrong format";
 }
@@ -25,6 +34,12 @@ export function validateEmail(value) {
 export const regexPassword =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9_])/;
 
+export function validatePassword(value) {
+  return value && regexPassword.test(value)
+    ? undefined
+    : "Wrong password format";
+}
+
 export function minLength(min) {
   return (value) =>
     value.length >= min
@@ -38,96 +53,66 @@ export function maxLength(max) {
       ? undefined
       : { text: "APP.COMMON.FORM.MOST_SYMBOLS", values: [max] };
 }
+export const addUser = (data) => {
+  const checkForUser = usersData?.find((user) => user.email === data.gmailUser);
 
-const createUserDataCollection = async (data) => {
-  await setDoc(doc(db, "users", auth.currentUser.uid), {
-    country: data.country,
-    phone: data.phone,
-    tasks: [],
-    username: data.username,
-  });
-};
 
-const addUserDataToFirebase = async (data) => {
-  try {
-    await createUserWithEmailAndPassword(
-      auth,
-      data.gmailUser,
-      data.userPassword
-    );
-    await createUserDataCollection(data);
-    return true;
-  } catch (err) {
-    errorSnackBar(err.message);
-  }
-};
-
-export const loginUser = async (gmailUser, userPassword) => {
-  if (gmailUser === "" || userPassword === "") {
-    errorSnackBar(NO_EMPTY_FIELDS);
+  if (checkForUser) {
+    errorSnackBar(USER_EXIST);
   } else {
-    try {
-      await signInWithEmailAndPassword(auth, gmailUser, userPassword);
-      localStorage.setItem("loggedIn", gmailUser);
+    if (Object.values(data).some((value) => required(value) !== undefined)) {
+      errorSnackBar(required());
+    } else if (
+      (validatePhone(data.phone) || validateEmail(data.gmailUser)) !== undefined
+    ) {
+      errorSnackBar(validatePhone());
+    } else if (
+      (minLength(3)(data.username) || maxLength(10)(data.username)) !==
+      undefined
+    ) {
+      errorSnackBar("Username should be 3 to 10 characters.");
+    } else if (
+      (minLength(6)(data.userPassword) || maxLength(20)(data.userPassword)) !==
+      undefined
+    ) {
+      errorSnackBar("Password should be 6 to 20 characters.");
+    } else if (data.userPassword !== data.confirmPassword) {
+      errorSnackBar("Passwords does not match!");
+    } else if (validatePassword(data.userPassword) !== undefined) {
+      errorSnackBar(validatePassword());
+
+    } else {
+      const newUser = {
+        username: data.username,
+        email: data.gmailUser,
+        password: data.userPassword,
+        phone: data.phone,
+        country: data.country,
+        tasks: [],
+      };
+      usersData.push(newUser);
+
+      localStorage.setItem(data.gmailUser, JSON.stringify(newUser));
+
+      successSnackBar(SUCCESS_REGISTER);
       return true;
-    } catch (err) {
-      errorSnackBar("Incorrect email or password!");
     }
   }
 };
 
-const validatePassword = (password, confirmPassword) => {
-  if (minLength(6)(password) || maxLength(20)(password)) {
-    errorSnackBar("Password should be from 6 to 20 characters.");
-    return false;
+export const loginUser = (gmailUser, userPassword) => {
+  const checkForUser = usersData?.find(
+    (user) => user.email === gmailUser && user.password === userPassword
+  );
+
+  if (checkForUser) {
+    localStorage.setItem(gmailUser, JSON.stringify(checkForUser));
+    successSnackBar(SUCCESS_LOGIN);
+    sessionStorage.setItem("loggedIn", gmailUser);
+    return true;
+  } else if (gmailUser === "" || userPassword === "") {
+    errorSnackBar(NO_EMPTY_FIELDS);
+  } else {
+    errorSnackBar(ERROR_LOGIN);
   }
-  if (password !== confirmPassword) {
-    errorSnackBar("Passwords does not match!");
-    return false;
-  }
-  if (!regexPassword.test(password)) {
-    errorSnackBar("Wrong password format");
-    return false;
-  }
-  return true;
-};
-
-const validateUsername = (username) => {
-  if (minLength(3)(username) || maxLength(10)(username)) {
-    errorSnackBar("Username should be from 3 to 10 characters.");
-    return false;
-  }
-  return true;
-};
-
-const validateEmptyFields = (data) => {
-  if (Object.values(data).some((value) => required(value))) {
-    errorSnackBar(required());
-    return false;
-  }
-  return true;
-};
-
-const validatePhoneAndEmail = (phone, email) => {
-  if (validatePhone(phone) || validateEmail(email)) {
-    errorSnackBar(validatePhone());
-    return false;
-  }
-  return true;
-};
-
-const validateData = (data) => {
-  if (!validateEmptyFields(data)) return false;
-
-  if (!validatePhoneAndEmail(data.phone, data.gmailUser)) return false;
-
-  if (!validateUsername(data.username)) return false;
-
-  if (!validatePassword(data.userPassword, data.confirmPassword)) return false;
-
-  return true;
-};
-
-export const addUserToDb = async (data) => {
-  if (validateData(data) && (await addUserDataToFirebase(data))) return true;
 };

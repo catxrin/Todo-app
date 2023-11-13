@@ -10,7 +10,7 @@ export default function TagsDropdown({ task, setUserData }) {
     };
   };
   return (
-    <div className="flex flex-row flex-wrap relative p-1 mt-2 gap-2.5 border-t-2 border-gray-200 pt-2">
+    <div className="flex flex-row p-1 mt-2 gap-2.5 border-t-2 border-gray-200 pt-2">
       <Typography
         onClick={() => {
           setUserData((prev) => {
@@ -24,7 +24,6 @@ export default function TagsDropdown({ task, setUserData }) {
       >
         Todo
       </Typography>
-
       <Typography
         onClick={() => {
           setUserData((prev) => {
@@ -38,7 +37,6 @@ export default function TagsDropdown({ task, setUserData }) {
       >
         Progress
       </Typography>
-
       <Typography
         onClick={() => {
           setUserData((prev) => {

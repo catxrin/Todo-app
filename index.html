@@ -17,6 +17,48 @@
     <title>Vite + React</title>
   </head>
   <body>
+    <style>
+      @tailwind base;
+      @tailwind components;
+      @tailwind utilities;
+      body {
+        margin: 0;
+        padding: 0;
+      }
+      * {
+        scrollbar-width: thin;
+        scrollbar-color: black;
+        box-sizing: border-box;
+      }
+      /* Chrome, Edge, and Safari */
+
+      *::-webkit-scrollbar {
+        width: 9px;
+      }
+      *::-webkit-scrollbar-track {
+        background: rgb(246, 246, 246);
+        border-radius: 8px;
+        max-height: 10px;
+      }
+
+      *::-webkit-scrollbar-thumb {
+        background-color: #3f3d56ad;
+        border-radius: 14px;
+        max-height: 10px;
+      }
+      *::-webkit-scrollbar-thumb {
+        min-height: 10px;
+      }
+      .btn-primary {
+        @apply bg-[#3F3D56] mt-[5px] py-3 text-[17px] text-white uppercase font-medium font-["Gabarito"];
+      }
+      .input-primary {
+        @apply my-2 w-[280px] border-[1px] rounded text-base placeholder-[#666666] placeholder:text-base placeholder:font-[500] px-3 py-[15px] border-[#C4C4C4];
+      }
+      .btn-primary-small {
+        @apply bg-[#3F3D56] mt-[5px] p-[5px]  text-[16px] text-white uppercase font-medium font-["Gabarito"];
+      }
+    </style>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
