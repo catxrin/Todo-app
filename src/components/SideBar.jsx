@@ -1,31 +1,33 @@
 import { Component } from "react";
 import axios from "axios";
-import { Button, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import profilePicture from "../assets/undraw_relaunch_day_902d.svg";
-import { deleteUser } from "../helpers/dataActions";
+import { doc, deleteDoc } from "firebase/firestore";
 import { errorSnackBar } from "./snackbars";
-
+import { auth, db } from "../config/firebase";
+import { signOut, deleteUser } from "@firebase/auth";
+import { PROBLEM_OCCURED, LOADING } from "../constants/messages";
 export default class SideBar extends Component {
   state = {
     quote: [],
   };
 
   componentDidMount() {
-    this.setState({ quote: "🔭 Loading... " });
+    this.setState({ quote: LOADING });
     axios
       .get("https://dummyjson.com/quotes/random")
       .then((res) => this.setState({ quote: res.data.quote }))
       .catch((err) => {
-        this.setState({ quote: "🔭 Seems like there is a problem" });
+        this.setState({ quote: PROBLEM_OCCURED });
         errorSnackBar(err.message);
       });
   }
 
   render() {
     return (
-      <div className="h-screen sm:mb-10 sm:h-[300px] flex flex-col justify-center text-center bg-slate-100 shadow-md shadow-slate-300 w-[300px] sm:w-screen px-5">
+      <div className="h-screen sm:mb-10 sm:h-72 flex flex-col justify-center text-center bg-slate-100 shadow-md shadow-slate-300 w-[20vw] sm:w-screen px-5">
         <div className="flex flex-col justify-center place-items-center mb-16 sm:mb-0">
-          <div className="w-[170px] sm:hidden">
+          <div className="w-[90%] sm:hidden">
             <img
               className="object-contain border-2 border-black rounded-full"
               src={profilePicture}
@@ -38,32 +40,42 @@ export default class SideBar extends Component {
           >
             Welcome, {this.props.username}
           </Typography>
-          <div className="shadow-sm shadow-[#cccccccc] bg-white border-x-4 border-black rounded p-2 mb-5 mt-3">
+
+          <div className="shadow-sm shadow-[#cccccccc] bg-white border-x-4 border-black rounded p-2 mb-4 mt-3">
             <Typography variant="p">“{this.state.quote}„</Typography>
           </div>
+
           <div className="flex flex-row gap-3 justify-center">
-            <Button
-              href="/"
-              onClick={() => {
-                deleteUser(this.props.userEmail);
+            <button
+              onClick={async () => {
+                try {
+                  await deleteDoc(doc(db, "users", auth.currentUser.uid));
+                  await deleteUser(auth.currentUser);
+                  localStorage.removeItem("loggedIn");
+                  window.location.pathname = "/";
+                } catch (err) {
+                  errorSnackBar(err.message);
+                }
               }}
               className="btn-primary-small"
-              variant="contained"
             >
               Delete Account
-            </Button>
+            </button>
 
-            <Button
-              href="/"
-              onClick={() => {
-                sessionStorage.removeItem("loggedIn");
-                window.location.reload(true);
+            <button
+              onClick={async () => {
+                try {
+                  await signOut(auth);
+                  localStorage.removeItem("loggedIn");
+                  window.location.pathname = "/";
+                } catch (err) {
+                  errorSnackBar(err.message);
+                }
               }}
               className="btn-primary-small"
-              variant="contained"
             >
               Logout
-            </Button>
+            </button>
           </div>
         </div>
       </div>

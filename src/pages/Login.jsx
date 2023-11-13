@@ -1,12 +1,18 @@
-import { Typography, Link } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { Typography } from "@mui/material";
+import { useNavigate, Link } from "react-router-dom";
 
 import loginIcon from ".././assets/loginIcon.svg";
 import { Field, Form } from "react-final-form";
 import { loginUser } from "../helpers/dataActions";
+import { APP_SLOGAN, CREATE_ACCOUNT } from "../constants/messages";
+import { useEffect } from "react";
 
 export default function Login() {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (localStorage.getItem("loggedIn")) navigate("/home");
+  }, []);
 
   return (
     <div className="bg-gradient-to-br from-gray-700 via-gray-900 to-black flex justify-center items-center w-full h-screen sm:bg-gradient-to-br sm:from-white sm:to-white">
@@ -21,18 +27,18 @@ export default function Login() {
             </Typography>
 
             <Typography style={{ fontFamily: "Gabarito" }} variant="p">
-              Reach your goals, stay organised.
+              {APP_SLOGAN}
             </Typography>
           </div>
           <Form
-            onSubmit={(e) =>
-              loginUser(e.gmailUser, e.userPassword) && navigate("/home")
-            }
-            initialValues={{ gmailUser: "", userPassword: "" }}
+            onSubmit={async (e) => {
+              (await loginUser(e.gmailUser, e.userPassword)) &&
+                navigate("/home");
+            }}
             render={({ handleSubmit }) => (
               <form onSubmit={handleSubmit} className="flex flex-col">
                 <Field
-                  type="text"
+                  autoComplete="on"
                   name="gmailUser"
                   component="input"
                   className="input-primary"
@@ -40,6 +46,7 @@ export default function Login() {
                 />
 
                 <Field
+                  autoComplete="on"
                   type="password"
                   name="userPassword"
                   component="input"
@@ -50,21 +57,16 @@ export default function Login() {
                 <button type="submit" className="btn-primary">
                   Login
                 </button>
-                <Link
-                  style={{
-                    textAlign: "right",
-                    fontSize: "16px",
-                  }}
-                  href="/register"
-                >
-                  No account? Make one!
+
+                <Link className="form-links" to="/register">
+                  {CREATE_ACCOUNT}
                 </Link>
               </form>
             )}
           />
         </div>
         <div className="sm:hidden">
-          <img src={loginIcon} alt="" />
+          <img src={loginIcon} />
         </div>
       </div>
     </div>

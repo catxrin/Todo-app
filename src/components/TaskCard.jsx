@@ -3,7 +3,7 @@ import Tags from "./Tags";
 
 export default function TaskCard({ task, setUserData }) {
   return (
-    <div className="bg-white relative border-l-[6px] flex flex-row justify-between shadow-sm shadow-[#cccccccc] p-1.5 rounded-md border-black w-[220px] sm:w-[450px]">
+    <div className="bg-white relative border-l-[6px] flex flex-row justify-between shadow-sm shadow-[#cccccccc] p-1.5 rounded-md border-black">
       <div className="flex flex-col relative">
         <Typography
           style={{
