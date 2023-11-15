@@ -15,8 +15,8 @@ export const getCountriesData = (setCountriesData) => {
 };
 
 export const getQuoteData = () => {
-  axios
+  return axios
     .get(QUOTES_URL)
-    .then((res) => res.data.quotes)
+    .then((res) => res.data.quote)
     .catch(() => PROBLEM_OCCURED);
 };

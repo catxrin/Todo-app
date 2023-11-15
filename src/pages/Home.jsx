@@ -3,8 +3,8 @@ import TaskCard from "../components/TaskCard";
 import Collon from "../components/Collon";
 import { useState, useEffect } from "react";
 import SideBar from "../components/SideBar";
-import { nanoid } from "nanoid";
 import { getUser, updateUser } from "../helpers/dataActions";
+import { nanoid } from "nanoid";
 
 export default function Home() {
   const [currentTask, setCurrentTask] = useState("");

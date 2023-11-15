@@ -50,3 +50,6 @@ html {
 .tag-primary {
   @apply shadow-sm py-0.5 px-2 font-normal rounded-[5px] cursor-pointer text-[15px] font-["Gabarito"];
 }
+.label {
+  @apply font-["Gabarito"] p-0 m-0;
+}

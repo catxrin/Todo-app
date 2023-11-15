@@ -54,7 +54,7 @@ export default function RegisterInputs() {
           <Autocomplete
             name="country"
             options={countriesData}
-            style={{ width: 280, marginTop: 8, marginBottom: 8 }}
+            style={{ width: 280, marginY: 8 }}
             renderInput={(params) => (
               <TextField {...register("country")} {...params} label="Country" />
             )}
@@ -77,9 +77,7 @@ export default function RegisterInputs() {
         </div>
       </div>
 
-      <button type="submint" className="btn-primary">
-        Register
-      </button>
+      <button className="btn-primary">Register</button>
 
       <Link className="form-links" to="/">
         {HAVE_AN_ACCOUNT}

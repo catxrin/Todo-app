@@ -11,8 +11,10 @@ export default class SideBar extends Component {
 
   componentDidMount() {
     this.setState({ quote: LOADING });
-    this.setState({ quote: getQuoteData() });
-    console.log(getQuoteData());
+    const takeData = async () => {
+      this.setState({ quote: await getQuoteData() });
+    };
+    takeData();
   }
 
   render() {
@@ -25,10 +27,7 @@ export default class SideBar extends Component {
               src={profilePicture}
             />
           </div>
-          <Typography
-            style={{ fontFamily: "Gabarito", padding: 0 }}
-            variant="h5"
-          >
+          <Typography className="label" variant="h5">
             Welcome, {this.props.username}
           </Typography>
 
