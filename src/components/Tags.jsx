@@ -1,4 +1,3 @@
-import { Typography } from "@mui/material";
 import TagsDropdown from "./TagsDropdown";
 import { useState } from "react";
 
@@ -13,19 +12,9 @@ export default function Tags({ task, setUserData }) {
     <>
       <div
         onClick={() => setShowOptions(!showOptions)}
-        className={`${
-          tagColors[task.status]
-        } px-1 rounded-lg text-center flex self-start mt-1 relative cursor-pointer`}
+        className={`flex self-start mt-1 relative`}
       >
-        <Typography
-          style={{
-            fontFamily: "Gabarito",
-            fontSize: 14,
-          }}
-          variant="p"
-        >
-          {task.status}
-        </Typography>
+        <p className={`tag-primary ${tagColors[task.status]}`}>{task.status}</p>
       </div>
       {showOptions && <TagsDropdown task={task} setUserData={setUserData} />}
     </>

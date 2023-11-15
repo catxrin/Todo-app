@@ -1,12 +1,9 @@
 import { Component } from "react";
-import axios from "axios";
 import { Typography } from "@mui/material";
 import profilePicture from "../assets/undraw_relaunch_day_902d.svg";
-import { doc, deleteDoc } from "firebase/firestore";
-import { errorSnackBar } from "./snackbars";
-import { auth, db } from "../config/firebase";
-import { signOut, deleteUser } from "@firebase/auth";
-import { PROBLEM_OCCURED, LOADING } from "../constants/messages";
+import { getQuoteData } from "../server/server";
+import { LOADING } from "../constants/messages";
+import { deleteCurrentUser, signOutUser } from "../helpers/dataActions";
 export default class SideBar extends Component {
   state = {
     quote: [],
@@ -14,13 +11,10 @@ export default class SideBar extends Component {
 
   componentDidMount() {
     this.setState({ quote: LOADING });
-    axios
-      .get("https://dummyjson.com/quotes/random")
-      .then((res) => this.setState({ quote: res.data.quote }))
-      .catch((err) => {
-        this.setState({ quote: PROBLEM_OCCURED });
-        errorSnackBar(err.message);
-      });
+    const takeData = async () => {
+      this.setState({ quote: await getQuoteData() });
+    };
+    takeData();
   }
 
   render() {
@@ -33,11 +27,7 @@ export default class SideBar extends Component {
               src={profilePicture}
             />
           </div>
-          <Typography
-            style={{ fontFamily: "Gabarito", padding: 0 }}
-            variant="h5"
-            type="text"
-          >
+          <Typography className="label" variant="h5">
             Welcome, {this.props.username}
           </Typography>
 
@@ -47,33 +37,13 @@ export default class SideBar extends Component {
 
           <div className="flex flex-row gap-3 justify-center">
             <button
-              onClick={async () => {
-                try {
-                  await deleteDoc(doc(db, "users", auth.currentUser.uid));
-                  await deleteUser(auth.currentUser);
-                  localStorage.removeItem("loggedIn");
-                  window.location.pathname = "/";
-                } catch (err) {
-                  errorSnackBar(err.message);
-                }
-              }}
+              onClick={() => deleteCurrentUser()}
               className="btn-primary-small"
             >
               Delete Account
             </button>
 
-            <button
-              onClick={async () => {
-                try {
-                  await signOut(auth);
-                  localStorage.removeItem("loggedIn");
-                  window.location.pathname = "/";
-                } catch (err) {
-                  errorSnackBar(err.message);
-                }
-              }}
-              className="btn-primary-small"
-            >
+            <button onClick={() => signOutUser()} className="btn-primary-small">
               Logout
             </button>
           </div>

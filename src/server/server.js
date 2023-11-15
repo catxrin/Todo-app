@@ -1,3 +1,4 @@
+import { PROBLEM_OCCURED } from "../constants/messages";
 import axios from "axios";
 
 export const COUNTRIES_URL = "https://laravel-world.com/api/countries";
@@ -11,4 +12,11 @@ export const getCountriesData = (setCountriesData) => {
     });
     setCountriesData(countries);
   });
+};
+
+export const getQuoteData = () => {
+  return axios
+    .get(QUOTES_URL)
+    .then((res) => res.data.quote)
+    .catch(() => PROBLEM_OCCURED);
 };
